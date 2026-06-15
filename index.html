@@ -1,0 +1,2728 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Vibe Coding für Linguist:innen – Leitfaden zur KI-gestützten App-Entwicklung im Bereich Sprachtechnologien, TU Berlin SoSe 2026">
+<meta name="theme-color" content="#0D1B2A">
+<meta name="robots" content="index,follow">
+<meta name="keywords" content="Vibe Coding, Computerlinguistik, Sprachtechnologien, KI App Entwicklung, Linguistik, TU Berlin">
+<meta property="og:title" content="Vibe Coding für Linguist:innen">
+<meta property="og:description" content="Interaktiver, mobiler Leitfaden für KI-gestützte linguistische Web-Apps mit Prompts, Checklisten und Dashboard.">
+<meta property="og:type" content="website">
+<title>Vibe Coding für Linguist:innen · TU Berlin SoSe 2026</title>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"LearningResource","name":"Vibe Coding für Linguist:innen","inLanguage":["de","en","ko"],"educationalLevel":"Master","about":["Linguistik","Sprachtechnologien","KI-gestützte App-Entwicklung"],"provider":{"@type":"CollegeOrUniversity","name":"TU Berlin"}}
+</script>
+<style>
+/* ═══════════════════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════════════════ */
+:root {
+  /* TU Berlin Farben */
+  --tu-red:    #C40D1E;
+  --tu-dark:   #1A1A1A;
+  /* Eigene Palette */
+  --navy:      #0D1B2A;
+  --blue:      #1B4F72;
+  --cyan:      #1ABC9C;
+  --cyan-dark: #148F77;
+  --purple:    #6C3483;
+  --orange:    #E67E22;
+  --red:       #C0392B;
+  --green:     #1D8348;
+  --white:     #FFFFFF;
+  --off-white: #F8FAFC;
+  --lgray:     #F1F3F5;
+  --mgray:     #CDD1D5;
+  --dgray:     #6B7280;
+  --text:      #1A252F;
+  --text-soft: #4B5563;
+  /* Typografie */
+  --font-body: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+  --font-mono: 'Consolas', 'Courier New', monospace;
+  /* Spacing */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --shadow-sm: 0 1px 4px rgba(0,0,0,.08);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.10);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,.13);
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* Touch-Optimierung */
+a, button, [role="tab"], .topic-card, .copy-btn {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--off-white);
+  color: var(--text);
+  line-height: 1.68;
+  font-size: 16px;
+}
+
+a { color: var(--cyan-dark); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Accessibility: focus ring */
+:focus-visible {
+  outline: 3px solid var(--cyan);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* ═══════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════ */
+header {
+  background: linear-gradient(135deg, #0A1628 0%, #0D1B2A 50%, #102030 100%);
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Dezentes Raster-Muster */
+header::after {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(26,188,156,.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26,188,156,.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.header-inner {
+  max-width: 1120px; margin: 0 auto;
+  padding: 36px 28px 40px;
+  position: relative; z-index: 1;
+}
+
+/* TU Berlin Logo oben rechts */
+.header-lv-info {
+  display: flex; flex-direction: column; gap: 3px;
+  font-size: .78rem; color: #8EACC4; margin-bottom: 22px;
+  line-height: 1.5;
+}
+.header-lv-info strong { color: #ABEBC6; }
+
+/* Haupt-Titel */
+.header-title-block { margin-bottom: 22px; }
+
+.header-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(26,188,156,.15); border: 1px solid rgba(26,188,156,.3);
+  color: var(--cyan); font-size: .75rem; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  padding: 4px 14px; border-radius: 20px; margin-bottom: 16px;
+}
+
+header h1 {
+  font-size: clamp(1.75rem, 3.8vw, 2.75rem);
+  font-weight: 800; line-height: 1.15; color: var(--white);
+  margin-bottom: 12px;
+}
+header h1 em {
+  font-style: normal; color: var(--cyan);
+}
+
+.header-sub {
+  font-size: 1rem; color: #93B5CC; max-width: 640px;
+  line-height: 1.6;
+}
+
+/* Meta-Zeile */
+.header-meta {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-top: 24px;
+}
+.header-meta-pill {
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12);
+  color: #93B5CC; font-size: .78rem; padding: 4px 12px;
+  border-radius: 20px; display: flex; align-items: center; gap: 5px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   STICKY NAV
+═══════════════════════════════════════════════════════ */
+nav {
+  background: var(--white);
+  border-bottom: 2px solid var(--lgray);
+  position: sticky; top: 0; z-index: 200;
+  box-shadow: var(--shadow-md);
+}
+.nav-inner {
+  max-width: 1120px; margin: 0 auto;
+  display: flex; overflow-x: auto;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.nav-inner::-webkit-scrollbar { display: none; }
+
+.nav-btn {
+  flex-shrink: 0; background: none; border: none; cursor: pointer;
+  padding: 14px 20px; font-size: .84rem; font-weight: 600;
+  color: var(--dgray); border-bottom: 3px solid transparent;
+  margin-bottom: -2px; transition: color .18s, border-color .18s;
+  white-space: nowrap; font-family: var(--font-body);
+  display: flex; align-items: center; gap: 6px;
+}
+.nav-btn:hover { color: var(--cyan); }
+.nav-btn.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+
+/* ═══════════════════════════════════════════════════════
+   MAIN LAYOUT
+═══════════════════════════════════════════════════════ */
+main { max-width: 1120px; margin: 0 auto; padding: 32px 20px 80px; }
+
+.section { display: none; }
+.section.active { display: block; }
+
+/* ═══════════════════════════════════════════════════════
+   KARTEN
+═══════════════════════════════════════════════════════ */
+.card {
+  background: var(--white); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm); padding: 28px 30px;
+  margin-bottom: 20px; border: 1px solid #E8ECF0;
+}
+.card + .card { /* kein extra Abstand nötig */ }
+
+.card-title {
+  font-size: 1.08rem; font-weight: 700; color: var(--navy);
+  margin-bottom: 14px; display: flex; align-items: center; gap: 9px;
+}
+.card-title .ct-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--lgray); display: flex; align-items: center;
+  justify-content: center; font-size: 1rem; flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════════
+   SECTION HEADLINES
+═══════════════════════════════════════════════════════ */
+.sec-h2 {
+  font-size: 1.4rem; font-weight: 800; color: var(--navy);
+  margin: 32px 0 16px; display: flex; align-items: center; gap: 10px;
+}
+.sec-h3 {
+  font-size: 1rem; font-weight: 700; color: var(--navy);
+  margin: 20px 0 10px;
+}
+
+p.para { font-size: .92rem; color: var(--text-soft); margin-bottom: 10px; line-height: 1.68; }
+ul.list { font-size: .9rem; color: var(--text-soft); padding-left: 22px; margin-bottom: 12px; }
+ul.list li { margin-bottom: 6px; }
+
+/* ═══════════════════════════════════════════════════════
+   INTRO: SCHEMA & STEPS
+═══════════════════════════════════════════════════════ */
+.flow-row {
+  display: flex; align-items: center; gap: 0;
+  flex-wrap: wrap; margin: 18px 0;
+}
+.flow-item {
+  background: var(--navy); color: var(--white);
+  padding: 10px 18px; font-size: .86rem; font-weight: 700;
+  border-radius: var(--radius-sm);
+}
+.flow-item em { color: var(--cyan); font-style: normal; display: block; font-size: .72rem; font-weight: 400; margin-bottom: 2px; }
+.flow-arrow { color: var(--cyan); font-size: 1.3rem; padding: 0 10px; font-weight: 900; }
+
+.step-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(210px,1fr));
+  gap: 16px; margin: 16px 0;
+}
+.step-box {
+  background: var(--lgray); border-radius: var(--radius-md);
+  padding: 20px 18px; border-left: 4px solid var(--cyan);
+  position: relative;
+}
+.step-box .sn {
+  font-size: 2rem; font-weight: 900; color: var(--cyan);
+  line-height: 1; margin-bottom: 6px;
+}
+.step-box h4 { font-size: .95rem; font-weight: 700; color: var(--navy); margin-bottom: 5px; }
+.step-box p  { font-size: .84rem; color: var(--text-soft); }
+
+/* ═══════════════════════════════════════════════════════
+   PLATTFORM-BOX
+═══════════════════════════════════════════════════════ */
+.platform-box {
+  background: linear-gradient(135deg, #0A1628, #0D1B2A);
+  color: var(--white); border-radius: var(--radius-lg);
+  padding: 26px 30px; margin: 20px 0;
+  border: 1px solid rgba(26,188,156,.2);
+}
+.platform-box h3 { color: var(--cyan); margin-bottom: 12px; font-size: 1rem; font-weight: 700; }
+.platform-box ol { padding-left: 22px; }
+.platform-box ol li { margin-bottom: 8px; font-size: .9rem; color: #93B5CC; }
+.platform-box ol li strong { color: var(--white); }
+.platform-box .pb-url {
+  margin-top: 16px; padding: 10px 16px; background: rgba(26,188,156,.12);
+  border-radius: var(--radius-sm); border-left: 3px solid var(--cyan);
+  font-size: .88rem; color: var(--cyan); font-family: var(--font-mono);
+}
+
+/* ═══════════════════════════════════════════════════════
+   HINWEIS-BOXEN
+═══════════════════════════════════════════════════════ */
+.hint {
+  border-radius: var(--radius-md); padding: 13px 17px;
+  margin: 12px 0; font-size: .88rem; line-height: 1.6;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.hint-icon { flex-shrink: 0; font-size: 1.1rem; margin-top: 1px; }
+.hint.info   { background: #EBF5FB; border-left: 4px solid #2980B9; color: #1A5276; }
+.hint.tip    { background: #E8F8F5; border-left: 4px solid var(--cyan); color: #0E6655; }
+.hint.warn   { background: #FEF9E7; border-left: 4px solid var(--orange); color: #784212; }
+.hint.danger { background: #FDEDEC; border-left: 4px solid var(--red); color: #922B21; }
+.hint strong { display: block; margin-bottom: 3px; }
+
+/* ═══════════════════════════════════════════════════════
+   PROMPT-BLÖCKE
+═══════════════════════════════════════════════════════ */
+.prompt-wrap { margin: 14px 0; }
+.prompt-label-bar {
+  background: #1E2A38; border-radius: var(--radius-md) var(--radius-md) 0 0;
+  padding: 8px 16px; display: flex; justify-content: space-between; align-items: center;
+}
+.prompt-label-bar span { font-size: .72rem; font-weight: 700; color: var(--cyan); letter-spacing: .08em; text-transform: uppercase; }
+.prompt-block {
+  background: #0D1117; border-radius: 0 0 var(--radius-md) var(--radius-md);
+  padding: 20px 22px; font-family: var(--font-mono);
+  font-size: .83rem; color: #AED6F1; line-height: 1.75;
+  white-space: pre-wrap; word-break: break-word;
+  border: 1px solid #1E2A38; border-top: none;
+}
+.prompt-block .pk  { color: #FF7B72; } /* Schlüsselwort */
+.prompt-block .pv  { color: #ABEBC6; } /* Wert */
+.prompt-block .pc  { color: #717D7E; font-style: italic; } /* Kommentar */
+
+.copy-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--cyan); color: var(--navy);
+  border: none; border-radius: var(--radius-sm); padding: 8px 16px;
+  font-size: .82rem; font-weight: 700; cursor: pointer;
+  margin-top: 8px; transition: background .18s, transform .1s;
+  font-family: var(--font-body);
+}
+.copy-btn:hover { background: var(--cyan-dark); }
+.copy-btn:active { transform: scale(.97); }
+.copy-btn.copied { background: var(--green); color: var(--white); }
+
+/* ═══════════════════════════════════════════════════════
+   SCHRITTE (in Detail-Panel)
+═══════════════════════════════════════════════════════ */
+.steps-list { list-style: none; }
+.steps-list li {
+  display: flex; gap: 15px; padding: 14px 0;
+  border-bottom: 1px dashed #E5E8EA;
+}
+.steps-list li:last-child { border-bottom: none; }
+.step-circle {
+  flex-shrink: 0; width: 34px; height: 34px;
+  background: var(--cyan); color: var(--navy);
+  border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; font-weight: 800; font-size: .88rem;
+  margin-top: 1px;
+}
+.step-text h4 { font-size: .92rem; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+.step-text p  { font-size: .86rem; color: var(--text-soft); }
+
+/* ═══════════════════════════════════════════════════════
+   TABELLEN
+═══════════════════════════════════════════════════════ */
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 14px 0; }
+.table-wrap .data-table,
+.table-wrap .plan-table { margin: 0; }
+
+.data-table {
+  width: 100%; border-collapse: collapse;
+  font-size: .86rem; margin: 14px 0;
+  border-radius: var(--radius-md); overflow: hidden;
+}
+.data-table thead th {
+  background: var(--navy); color: var(--white);
+  padding: 10px 14px; text-align: left; font-size: .8rem;
+  font-weight: 700; letter-spacing: .02em;
+}
+.data-table tbody td {
+  padding: 9px 14px; border-bottom: 1px solid #EEF0F2;
+  vertical-align: top; color: var(--text-soft);
+}
+.data-table tbody tr:last-child td { border-bottom: none; }
+.data-table tbody tr:nth-child(even) td { background: #FAFBFC; }
+.data-table tbody tr:hover td { background: #F0F9F7; }
+.pro { color: var(--green); font-weight: 600; }
+.con { color: var(--red);   font-weight: 600; }
+
+/* ═══════════════════════════════════════════════════════
+   METHODE: RAFE-BLÖCKE
+═══════════════════════════════════════════════════════ */
+.rafe-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(210px,1fr));
+  gap: 14px; margin: 16px 0;
+}
+.rafe-card {
+  background: var(--white); border: 1px solid #E8ECF0;
+  border-radius: var(--radius-md); padding: 18px 16px;
+  box-shadow: var(--shadow-sm);
+}
+.rafe-letter {
+  width: 38px; height: 38px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; font-weight: 900; margin-bottom: 10px; color: var(--white);
+}
+.rafe-card h4 { font-size: .95rem; font-weight: 700; color: var(--navy); margin-bottom: 5px; }
+.rafe-card p  { font-size: .83rem; color: var(--text-soft); }
+.rafe-card .rafe-ex {
+  margin-top: 8px; font-size: .78rem; font-family: var(--font-mono);
+  background: var(--lgray); padding: 5px 9px; border-radius: 4px; color: var(--blue);
+}
+
+/* ═══════════════════════════════════════════════════════
+   LEVEL-TRENNLINIE
+═══════════════════════════════════════════════════════ */
+.level-divider {
+  display: flex; align-items: center; gap: 14px;
+  margin: 32px 0 18px;
+}
+.level-divider::after {
+  content: ''; flex: 1; height: 1px; background: #E8ECF0;
+}
+.level-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 16px; border-radius: 20px; font-size: .8rem;
+  font-weight: 700; letter-spacing: .03em; white-space: nowrap;
+}
+.lvl-e  { background: #D5F5E3; color: #1D6A3E; border: 1px solid #A9DFBF; }
+.lvl-f  { background: #E8DAEF; color: #5B2C6F; border: 1px solid #C39BD3; }
+.lvl-ex { background: #FADBD8; color: #922B21; border: 1px solid #F1948A; }
+.level-divider h2 { font-size: 1.15rem; font-weight: 800; color: var(--navy); white-space: nowrap; }
+
+/* ═══════════════════════════════════════════════════════
+   TOPIC-KARTEN RASTER
+═══════════════════════════════════════════════════════ */
+.topic-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(175px,1fr));
+  gap: 12px; margin-bottom: 6px;
+}
+.topic-card {
+  background: var(--white); border: 2px solid #E8ECF0;
+  border-radius: var(--radius-md); padding: 18px 14px;
+  cursor: pointer; text-align: center;
+  transition: transform .18s, box-shadow .18s, border-color .18s;
+  box-shadow: var(--shadow-sm);
+}
+.topic-card:hover {
+  transform: translateY(-3px); box-shadow: var(--shadow-md);
+}
+.topic-card:focus-visible { outline: 3px solid var(--cyan); }
+.topic-card.sel-e  { border-color: #27AE60; box-shadow: 0 0 0 3px rgba(39,174,96,.15); }
+.topic-card.sel-f  { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(108,52,131,.15); }
+.topic-card.sel-ex { border-color: var(--red); box-shadow: 0 0 0 3px rgba(192,57,43,.15); }
+.topic-card:hover.e-card  { border-color: #27AE60; }
+.topic-card:hover.f-card  { border-color: var(--purple); }
+.topic-card:hover.ex-card { border-color: var(--red); }
+.tc-icon { font-size: 1.9rem; margin-bottom: 8px; line-height: 1; }
+.tc-name { font-size: .88rem; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+.tc-tag  { font-size: .75rem; color: var(--dgray); }
+
+/* ═══════════════════════════════════════════════════════
+   DETAIL-PANEL
+═══════════════════════════════════════════════════════ */
+#detail-panel {
+  display: none; margin-top: 22px;
+  border-radius: var(--radius-lg); overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+#detail-panel.open { display: block; }
+
+.dp-header {
+  padding: 24px 30px; color: var(--white);
+  border-top: 4px solid var(--cyan);
+  background: linear-gradient(135deg, #0A1628, #0D2340);
+}
+.dp-badge {
+  display: inline-block; padding: 3px 12px; border-radius: 20px;
+  font-size: .72rem; font-weight: 700; margin-bottom: 10px;
+}
+.dp-header h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 5px; }
+.dp-header p  { color: #93B5CC; font-size: .88rem; }
+
+.dp-body { background: var(--white); padding: 0; }
+
+.dp-tabs {
+  display: flex; border-bottom: 2px solid var(--lgray);
+  overflow-x: auto; scrollbar-width: none;
+}
+.dp-tabs::-webkit-scrollbar { display: none; }
+.dp-tab {
+  flex-shrink: 0; background: none; border: none; cursor: pointer;
+  padding: 13px 20px; font-size: .84rem; font-weight: 600;
+  color: var(--dgray); border-bottom: 2px solid transparent;
+  margin-bottom: -2px; transition: color .18s, border-color .18s;
+  font-family: var(--font-body); white-space: nowrap;
+}
+.dp-tab.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+.dp-tab-content { display: none; padding: 26px 30px; }
+.dp-tab-content.active { display: block; }
+
+/* Interne Tabelle im Detail */
+.plan-table {
+  width: 100%; border-collapse: collapse; font-size: .88rem; margin: 14px 0;
+}
+.plan-table th {
+  background: var(--lgray); color: var(--navy); padding: 9px 14px;
+  text-align: left; font-weight: 700; width: 28%; vertical-align: top;
+  border: 1px solid #E8ECF0; white-space: nowrap;
+}
+.plan-table td {
+  padding: 9px 14px; color: var(--text-soft); border: 1px solid #E8ECF0; vertical-align: top;
+}
+
+/* Output-Beispiel */
+.output-box {
+  background: #F8FAFB; border: 1px solid #DDE3EA;
+  border-radius: var(--radius-md); padding: 16px 18px; margin: 12px 0;
+}
+.output-box .ob-label {
+  font-size: .72rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--dgray); margin-bottom: 10px;
+}
+.ob-ok   { border-left: 4px solid var(--green); }
+.ob-bad  { border-left: 4px solid var(--red); }
+.hl-ok   { background: #D5F5E3; padding: 1px 5px; border-radius: 3px; font-size: .85rem; }
+.hl-bad  { background: #FADBD8; padding: 1px 5px; border-radius: 3px; font-size: .85rem; }
+
+/* Troubleshoot */
+.ts-item {
+  border-left: 4px solid var(--orange); background: #FEF9E7;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 12px 16px; margin-bottom: 12px;
+}
+.ts-item h4 { font-size: .88rem; font-weight: 700; color: #784212; margin-bottom: 4px; }
+.ts-item p  { font-size: .84rem; color: #6E2C00; }
+.ts-fix {
+  margin-top: 8px; padding: 9px 13px;
+  background: #E8F8F5; border-left: 3px solid var(--cyan);
+  font-size: .84rem; color: var(--green); border-radius: 0 4px 4px 0;
+}
+
+/* ═══════════════════════════════════════════════════════
+   CHECKLISTE
+═══════════════════════════════════════════════════════ */
+.cl-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 11px 0; border-bottom: 1px dashed #E8ECF0;
+  font-size: .9rem; cursor: pointer;
+}
+.cl-item:last-child { border-bottom: none; }
+.cl-item input[type=checkbox] { width: 18px; height: 18px; margin-top: 2px; cursor: pointer; accent-color: var(--cyan); }
+.cl-item label { cursor: pointer; color: var(--text-soft); line-height: 1.5; }
+.cl-item.done label { text-decoration: line-through; color: var(--mgray); }
+
+/* ═══════════════════════════════════════════════════════
+   ZWEI-SPALTEN GRID
+═══════════════════════════════════════════════════════ */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+@media (max-width: 480px) {
+  header h1 { font-size: 1.5rem; }
+  .header-sub { font-size: .88rem; }
+  .nav-btn { padding: 12px 13px; font-size: .78rem; }
+  .topic-grid { grid-template-columns: repeat(auto-fill, minmax(130px,1fr)); }
+  .dp-tab { padding: 11px 13px; font-size: .78rem; }
+  .dp-tab-content { padding: 14px; }
+  .card { padding: 16px 14px; }
+  .step-grid { grid-template-columns: 1fr; }
+  .rafe-grid { grid-template-columns: 1fr; }
+  .copy-btn { width: 100%; justify-content: center; }
+  .flow-item { width: 100%; }
+  .prompt-block { font-size: .78rem; padding: 14px 14px; }
+}
+
+/* ═══════════════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════════════ */
+footer {
+  background: var(--navy); color: #5D7E9A;
+  text-align: center; padding: 28px 20px;
+  font-size: .8rem; line-height: 1.7;
+  border-top: 3px solid var(--cyan);
+}
+footer strong { color: #93B5CC; }
+footer a { color: var(--cyan); }
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .data-table thead th,
+  .data-table tbody td,
+  .plan-table th,
+  .plan-table td { font-size: .8rem; padding: 7px 10px; }
+  .output-box { padding: 12px 13px; }
+
+  .header-inner { padding: 24px 16px 28px; }
+  main { padding: 20px 14px 60px; }
+  .card { padding: 20px 18px; }
+  .dp-tab-content { padding: 18px; }
+  .dp-header { padding: 18px 18px; }
+  .topic-grid { grid-template-columns: repeat(auto-fill, minmax(145px,1fr)); }
+  .flow-row { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .flow-arrow { transform: rotate(90deg); padding: 2px 0; }
+}
+
+/* ═══════════════════════════════════════════════════════
+   MODERN UX LAYER: THEME, DASHBOARD, MOBILE, SECURITY
+═══════════════════════════════════════════════════════ */
+body[data-theme="dark"] {
+  --off-white: #0F1720;
+  --white: #16202B;
+  --lgray: #223040;
+  --mgray: #3A4A5E;
+  --dgray: #AAB7C6;
+  --text: #EEF4F8;
+  --text-soft: #C4D0DC;
+  --navy: #EAF6F3;
+  background: var(--off-white);
+}
+
+body[data-theme="dark"] header {
+  background: linear-gradient(135deg, #07111E 0%, #102337 55%, #17302E 100%);
+}
+
+body[data-theme="dark"] header h1,
+body[data-theme="dark"] header h1 em,
+body[data-theme="dark"] .header-eyebrow,
+body[data-theme="dark"] footer strong {
+  color: #F8FAFC;
+}
+
+body[data-theme="dark"] header h1 em,
+body[data-theme="dark"] .header-eyebrow {
+  color: #2DD4BF;
+}
+
+body[data-theme="dark"] footer {
+  background: #07111E;
+  color: #A8B7C7;
+}
+
+body[data-theme="dark"] .card,
+body[data-theme="dark"] .ux-card,
+body[data-theme="dark"] .settings-panel,
+body[data-theme="dark"] .auth-panel,
+body[data-theme="dark"] nav {
+  border-color: #263647;
+  box-shadow: 0 6px 22px rgba(0,0,0,.25);
+}
+
+.skip-link {
+  position: fixed; top: 10px; left: 10px; z-index: 1000;
+  transform: translateY(-140%);
+  background: var(--cyan-dark); color: #fff; padding: 10px 14px;
+  border-radius: var(--radius-sm); font-weight: 700;
+}
+.skip-link:focus { transform: translateY(0); }
+
+.ux-toolbar {
+  position: fixed; right: 18px; bottom: 18px; z-index: 400;
+  display: grid; gap: 8px;
+}
+.ux-action {
+  width: 46px; height: 46px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.25); cursor: pointer;
+  background: var(--navy); color: var(--white);
+  box-shadow: var(--shadow-lg); font-size: 1rem;
+}
+.ux-action:hover { background: var(--cyan-dark); }
+
+.settings-panel,
+.auth-panel {
+  position: fixed; right: 18px; bottom: 126px; z-index: 420;
+  width: min(360px, calc(100vw - 28px)); max-height: calc(100vh - 150px);
+  overflow: auto; background: var(--white); color: var(--text);
+  border: 1px solid #E4E9EF; border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg); padding: 18px;
+  transform: translateY(12px); opacity: 0; pointer-events: none;
+  transition: transform .18s ease, opacity .18s ease;
+}
+.settings-panel.open,
+.auth-panel.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+.settings-panel h2,
+.auth-panel h2 { font-size: 1rem; margin-bottom: 12px; color: var(--navy); }
+.setting-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  padding: 11px 0; border-top: 1px solid var(--lgray);
+}
+.setting-row:first-of-type { border-top: 0; }
+.setting-row label { font-size: .88rem; color: var(--text-soft); font-weight: 650; }
+.setting-row select,
+.setting-row input[type="range"] {
+  min-width: 128px; accent-color: var(--cyan-dark);
+}
+.toggle {
+  width: 48px; height: 28px; border-radius: 16px; border: 0; cursor: pointer;
+  background: var(--mgray); position: relative; flex-shrink: 0;
+}
+.toggle::after {
+  content: ''; width: 22px; height: 22px; border-radius: 50%; background: #fff;
+  position: absolute; top: 3px; left: 3px; transition: transform .18s ease;
+}
+.toggle[aria-pressed="true"] { background: var(--cyan-dark); }
+.toggle[aria-pressed="true"]::after { transform: translateX(20px); }
+
+.dashboard-grid {
+  display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px;
+}
+.ux-card {
+  background: var(--white); border: 1px solid #E8ECF0; border-radius: 8px;
+  padding: 18px; box-shadow: var(--shadow-sm);
+}
+.ux-card h3 { font-size: .95rem; color: var(--navy); margin-bottom: 10px; }
+.ux-card p { color: var(--text-soft); font-size: .88rem; }
+.widget-large { grid-column: span 7; }
+.widget-medium { grid-column: span 5; }
+.widget-small { grid-column: span 4; }
+body.compact-mode .ux-card,
+body.compact-mode .card { padding: 16px; }
+
+.kpi-row {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px;
+}
+.kpi {
+  background: var(--lgray); border-radius: 8px; padding: 12px;
+  border-left: 4px solid var(--cyan-dark);
+}
+.kpi strong { display: block; font-size: 1.35rem; color: var(--navy); line-height: 1.1; }
+.kpi span { display: block; color: var(--text-soft); font-size: .78rem; margin-top: 4px; }
+
+.chart-bars { display: grid; gap: 10px; margin-top: 8px; }
+.chart-bar {
+  display: grid; grid-template-columns: 92px 1fr 42px; align-items: center; gap: 10px;
+  font-size: .82rem; color: var(--text-soft);
+}
+.bar-track {
+  height: 12px; border-radius: 999px; background: var(--lgray); overflow: hidden;
+}
+.bar-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--cyan-dark), var(--orange)); }
+.donut {
+  width: 150px; aspect-ratio: 1; border-radius: 50%;
+  background: conic-gradient(var(--cyan-dark) 0 42%, var(--purple) 42% 72%, var(--orange) 72% 88%, var(--mgray) 88% 100%);
+  margin: 4px auto 12px; position: relative;
+}
+.donut::after {
+  content: '15'; position: absolute; inset: 24px; border-radius: 50%;
+  background: var(--white); color: var(--navy); display: grid; place-items: center;
+  font-weight: 800; font-size: 1.8rem;
+}
+.legend { display: flex; flex-wrap: wrap; gap: 8px; font-size: .78rem; color: var(--text-soft); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; }
+
+.widget-controls { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip-btn {
+  border: 1px solid var(--mgray); background: var(--white); color: var(--text);
+  padding: 8px 10px; border-radius: 999px; cursor: pointer; font: inherit; font-size: .82rem;
+}
+.chip-btn[aria-pressed="true"] { background: var(--cyan-dark); border-color: var(--cyan-dark); color: #fff; }
+.hidden-widget { display: none; }
+
+.search-wrap {
+  display: flex; gap: 8px; align-items: center; margin-top: 14px;
+}
+.search-wrap input {
+  width: 100%; border: 1px solid var(--mgray); border-radius: 8px;
+  padding: 12px 14px; font: inherit; background: var(--white); color: var(--text);
+}
+.search-results {
+  margin-top: 8px; color: var(--text-soft); font-size: .84rem; min-height: 22px;
+}
+.topic-card.is-filtered-out { display: none; }
+
+.notice-stack {
+  position: fixed; left: 18px; bottom: 18px; z-index: 430;
+  display: grid; gap: 8px; width: min(360px, calc(100vw - 36px));
+}
+.notice {
+  background: var(--white); color: var(--text); border: 1px solid #E4E9EF;
+  border-left: 4px solid var(--cyan-dark); border-radius: 8px; padding: 12px 14px;
+  box-shadow: var(--shadow-md); font-size: .86rem;
+}
+.auth-buttons { display: grid; gap: 8px; }
+.auth-btn {
+  border: 1px solid var(--mgray); background: var(--white); color: var(--text);
+  border-radius: 8px; padding: 11px 12px; cursor: pointer; font-weight: 700;
+  text-align: left;
+}
+.security-note {
+  margin-top: 12px; padding: 10px; background: var(--lgray); border-radius: 8px;
+  font-size: .8rem; color: var(--text-soft);
+}
+
+@media (max-width: 820px) {
+  .nav-inner { padding-bottom: 3px; }
+  .dashboard-grid,
+  .kpi-row { grid-template-columns: 1fr; }
+  .widget-large,
+  .widget-medium,
+  .widget-small { grid-column: auto; }
+  .ux-toolbar {
+    left: 0; right: 0; bottom: 0; grid-auto-flow: column; justify-content: center;
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+    background: color-mix(in srgb, var(--white) 92%, transparent);
+    border-top: 1px solid var(--lgray);
+  }
+  .ux-action { width: 44px; height: 44px; box-shadow: none; }
+  .settings-panel,
+  .auth-panel {
+    left: 12px; right: 12px; bottom: 70px; width: auto;
+  }
+  .notice-stack { bottom: 72px; left: 12px; width: calc(100vw - 24px); }
+  body { padding-bottom: 64px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Zum Inhalt springen</a>
+
+<div class="ux-toolbar" aria-label="Schnellzugriff">
+  <button class="ux-action" type="button" onclick="showSection('dashboard', document.querySelector('[data-section-btn=dashboard]'))" aria-label="Dashboard öffnen" title="Dashboard">⌂</button>
+  <button class="ux-action" type="button" onclick="toggleTheme()" aria-label="Darstellung wechseln" title="Hell/Dunkel">◐</button>
+  <button class="ux-action" type="button" onclick="toggleSettings()" aria-label="Einstellungen öffnen" title="Einstellungen">⚙</button>
+  <button class="ux-action" type="button" onclick="toggleAuth()" aria-label="Anmelden" title="Anmelden">↗</button>
+</div>
+
+<aside id="settings-panel" class="settings-panel" aria-label="Einstellungen" aria-hidden="true">
+  <h2 data-i18n="settingsTitle">Einstellungen</h2>
+  <div class="setting-row">
+    <label for="language-select" data-i18n="language">Sprache</label>
+    <select id="language-select" onchange="setLanguage(this.value)">
+      <option value="de">Deutsch</option>
+      <option value="en">English</option>
+      <option value="ko">한국어</option>
+    </select>
+  </div>
+  <div class="setting-row">
+    <label data-i18n="darkMode">Dark Mode</label>
+    <button id="dark-toggle" class="toggle" type="button" aria-pressed="false" onclick="toggleTheme()"></button>
+  </div>
+  <div class="setting-row">
+    <label data-i18n="compactMode">Kompakte Ansicht</label>
+    <button id="compact-toggle" class="toggle" type="button" aria-pressed="false" onclick="toggleCompact()"></button>
+  </div>
+  <div class="setting-row">
+    <label data-i18n="updates">Update-Hinweise</label>
+    <button id="updates-toggle" class="toggle" type="button" aria-pressed="true" onclick="toggleUpdates()"></button>
+  </div>
+  <div class="setting-row">
+    <label for="font-range" data-i18n="fontSize">Textgröße</label>
+    <input id="font-range" type="range" min="15" max="20" value="16" oninput="setFontSize(this.value)">
+  </div>
+  <p class="security-note" data-i18n="securityNote">Sicherheit: Alle Einstellungen werden nur lokal im Browser gespeichert. Es werden keine Passwörter oder personenbezogenen Daten in diesem Prototyp übertragen.</p>
+</aside>
+
+<aside id="auth-panel" class="auth-panel" aria-label="Social Login" aria-hidden="true">
+  <h2 data-i18n="authTitle">Schnell anmelden</h2>
+  <div class="auth-buttons">
+    <button class="auth-btn" type="button" onclick="mockLogin('Google')">Mit Google fortfahren</button>
+    <button class="auth-btn" type="button" onclick="mockLogin('GitHub')">Mit GitHub fortfahren</button>
+    <button class="auth-btn" type="button" onclick="mockLogin('Microsoft')">Mit Microsoft fortfahren</button>
+  </div>
+  <p class="security-note" data-i18n="authNote">Demo-Integration: In einer Produktivversion wird OAuth 2.0/OpenID Connect serverseitig validiert und mit CSRF-Schutz abgesichert.</p>
+</aside>
+
+<div id="notice-stack" class="notice-stack" aria-live="polite" aria-atomic="true"></div>
+
+<!-- ═══════════════════════════════════════════════════
+     HEADER
+═══════════════════════════════════════════════════════ -->
+<header role="banner">
+  <div class="header-inner">
+
+    <!-- LV-Info -->
+    <div class="header-lv-info">
+      <span><strong>MA SK-2</strong> · App-Entwicklung für Sprachtechnologien</span>
+      <span>Regex, KI-gestützte Analyse, Prototyping</span>
+      <span>SoSe 2026 · <strong>PD Dr. See-Young Cho</strong></span>
+    </div>
+
+    <!-- Haupttitel -->
+    <div class="header-title-block">
+      <div class="header-eyebrow">
+        <span>🧪</span> Interaktiver Leitfaden
+      </div>
+      <h1>Vibe Coding für <em>Linguist:innen</em></h1>
+      <p class="header-sub">
+        Wie Sie mit natürlicher Sprache linguistische Web-Apps entwickeln –
+        ganz ohne Programmierkenntnisse. Mit Schritt-für-Schritt-Anleitungen,
+        kopierbaren Prompts und Troubleshooting für alle 15 App-Ideen.
+      </p>
+    </div>
+
+    <!-- Meta-Pills -->
+    <div class="header-meta" role="list">
+      <span class="header-meta-pill" role="listitem">🛠️ Google AI Studio</span>
+      <span class="header-meta-pill" role="listitem">📱 15 App-Ideen mit Prompts</span>
+      <span class="header-meta-pill" role="listitem">⭐ Einstieg bis 🚀 Experten</span>
+      <span class="header-meta-pill" role="listitem">🔧 Troubleshooting inklusive</span>
+    </div>
+
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════
+     NAVIGATION
+═══════════════════════════════════════════════════════ -->
+<nav role="navigation" aria-label="Hauptnavigation">
+  <div class="nav-inner" role="tablist">
+    <button class="nav-btn" data-section-btn="dashboard" role="tab" aria-selected="false" onclick="showSection('dashboard',this)">⌂ Dashboard</button>
+    <button class="nav-btn active" role="tab" aria-selected="true"  onclick="showSection('intro',this)">🚀 Einstieg</button>
+    <button class="nav-btn"        role="tab" aria-selected="false" onclick="showSection('methode',this)">⚙️ Methode</button>
+    <button class="nav-btn"        role="tab" aria-selected="false" onclick="showSection('apps',this)">📱 15 App-Ideen</button>
+    <button class="nav-btn"        role="tab" aria-selected="false" onclick="showSection('trouble',this)">🔧 Troubleshooting</button>
+    <button class="nav-btn"        role="tab" aria-selected="false" onclick="showSection('checklist',this)">✅ Abgabe-Checkliste</button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════
+     MAIN
+═══════════════════════════════════════════════════════ -->
+<main id="main-content">
+
+<!-- ╔═══════════════════════════════════════╗
+     ║  UX DASHBOARD                         ║
+     ╚═══════════════════════════════════════╝ -->
+<div id="s-dashboard" class="section" role="tabpanel">
+  <div class="card">
+    <div class="card-title"><span class="ct-icon">⌂</span> <span data-i18n="dashboardTitle">Lern-Dashboard</span></div>
+    <p class="para" data-i18n="dashboardIntro">Personalisieren Sie die Startansicht, verfolgen Sie Fortschritt und finden Sie App-Ideen schneller.</p>
+    <div class="search-wrap" role="search">
+      <input id="global-search" type="search" autocomplete="off" placeholder="App-Ideen, Methoden oder Prompts suchen..." aria-label="Leitfaden durchsuchen" oninput="filterContent(this.value)">
+    </div>
+    <div id="search-results" class="search-results"></div>
+  </div>
+
+  <div class="dashboard-grid" id="dashboard-grid">
+    <section class="ux-card widget-large" data-widget="progress">
+      <h3 data-i18n="progressTitle">Fortschritt & Fokus</h3>
+      <div class="kpi-row">
+        <div class="kpi"><strong id="kpi-checks">0%</strong><span>Checkliste</span></div>
+        <div class="kpi"><strong>15</strong><span>App-Ideen</span></div>
+        <div class="kpi"><strong>4</strong><span>Methodenphasen</span></div>
+        <div class="kpi"><strong id="kpi-views">1</strong><span>Sitzungen</span></div>
+      </div>
+    </section>
+
+    <section class="ux-card widget-medium" data-widget="distribution">
+      <h3 data-i18n="distributionTitle">Ideen nach Niveau</h3>
+      <div class="donut" aria-label="Diagramm: 15 App-Ideen nach Schwierigkeitsgrad"></div>
+      <div class="legend">
+        <span><i style="background:var(--cyan-dark)"></i>Einstieg</span>
+        <span><i style="background:var(--purple)"></i>Fortgeschritten</span>
+        <span><i style="background:var(--orange)"></i>Experten</span>
+      </div>
+    </section>
+
+    <section class="ux-card widget-small" data-widget="visuals">
+      <h3 data-i18n="visualTitle">Datenvisualisierung</h3>
+      <div class="chart-bars" aria-label="Beispieldiagramm für Analyseaufwand">
+        <div class="chart-bar"><span>Regex</span><div class="bar-track"><div class="bar-fill" style="width:42%"></div></div><strong>42%</strong></div>
+        <div class="chart-bar"><span>Prompt</span><div class="bar-track"><div class="bar-fill" style="width:72%"></div></div><strong>72%</strong></div>
+        <div class="chart-bar"><span>Test</span><div class="bar-track"><div class="bar-fill" style="width:58%"></div></div><strong>58%</strong></div>
+        <div class="chart-bar"><span>Review</span><div class="bar-track"><div class="bar-fill" style="width:35%"></div></div><strong>35%</strong></div>
+      </div>
+    </section>
+
+    <section class="ux-card widget-small" data-widget="customize">
+      <h3 data-i18n="customizeTitle">Dashboard anpassen</h3>
+      <div class="widget-controls" aria-label="Dashboard-Widgets ein- oder ausblenden">
+        <button class="chip-btn" type="button" data-widget-toggle="progress" aria-pressed="true" onclick="toggleWidget('progress')">Fortschritt</button>
+        <button class="chip-btn" type="button" data-widget-toggle="distribution" aria-pressed="true" onclick="toggleWidget('distribution')">Niveaus</button>
+        <button class="chip-btn" type="button" data-widget-toggle="visuals" aria-pressed="true" onclick="toggleWidget('visuals')">Charts</button>
+        <button class="chip-btn" type="button" data-widget-toggle="updates" aria-pressed="true" onclick="toggleWidget('updates')">Updates</button>
+      </div>
+    </section>
+
+    <section class="ux-card widget-small" data-widget="updates">
+      <h3 data-i18n="updatesTitle">Update-Center</h3>
+      <p id="update-copy">Letztes Update: 15. Juni 2026. Neue UX-Funktionen, lokaler Datenschutzmodus und mobile Schnellzugriffe sind aktiv.</p>
+    </section>
+
+    <section class="ux-card widget-medium" data-widget="analytics">
+      <h3 data-i18n="analyticsTitle">Performance Analytics</h3>
+      <p id="analytics-copy">Core Web Vitals werden lokal gemessen. Externe Analytics sind vorbereitet, aber ohne Tracking-ID deaktiviert.</p>
+      <div class="chart-bars">
+        <div class="chart-bar"><span>LCP</span><div class="bar-track"><div id="metric-lcp" class="bar-fill" style="width:0%"></div></div><strong id="metric-lcp-label">...</strong></div>
+        <div class="chart-bar"><span>CLS</span><div class="bar-track"><div id="metric-cls" class="bar-fill" style="width:0%"></div></div><strong id="metric-cls-label">...</strong></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ╔═══════════════════════════════════════╗
+     ║  SEKTION 1: EINSTIEG                 ║
+     ╚═══════════════════════════════════════╝ -->
+<div id="s-intro" class="section active" role="tabpanel">
+
+  <div class="card">
+    <div class="card-title"><span class="ct-icon">💡</span> Was ist Vibe Coding?</div>
+    <p class="para">
+      <strong>Vibe Coding</strong> (Andrej Karpathy, 2025) bezeichnet die Entwicklung von Software durch
+      natürlichsprachliche Beschreibungen an eine KI – ohne manuell eine Zeile Code zu schreiben.
+      Als Linguist:in bringen Sie das Entscheidende mit: das <strong>Fachwissen darüber, was analysiert werden soll</strong>.
+    </p>
+    <div class="flow-row" aria-label="Vibe-Coding-Prozess">
+      <div class="flow-item"><em>Ihre Idee</em>💬 Intent</div>
+      <div class="flow-arrow" aria-hidden="true">→</div>
+      <div class="flow-item"><em>Beschreibung</em>📝 Prompt</div>
+      <div class="flow-arrow" aria-hidden="true">→</div>
+      <div class="flow-item"><em>KI schreibt Code</em>🤖 Generierung</div>
+      <div class="flow-arrow" aria-hidden="true">→</div>
+      <div class="flow-item"><em>Prüfen &amp; Verbessern</em>🔍 Verifikation</div>
+      <div class="flow-arrow" aria-hidden="true">→</div>
+      <div class="flow-item"><em>Fertig!</em>✅ App</div>
+    </div>
+    <div class="hint tip">
+      <span class="hint-icon">💡</span>
+      <div><strong>Der entscheidende Unterschied:</strong>
+        Früher mussten Linguist:innen Informatiker:innen beauftragen.
+        Heute schreiben Sie die Aufgabenbeschreibung selbst – auf Deutsch.</div>
+    </div>
+  </div>
+
+  <h2 class="sec-h2">Die drei Phasen des Vibe Codings</h2>
+  <div class="step-grid">
+    <div class="step-box">
+      <div class="sn">1</div>
+      <h4>Intent definieren</h4>
+      <p>Was soll das Tool können? Formulieren Sie das Ziel in einem klaren, vollständigen Satz – das ist Ihr Ausgangspunkt.</p>
+    </div>
+    <div class="step-box">
+      <div class="sn">2</div>
+      <h4>Vibe-Prototyp generieren</h4>
+      <p>System Prompt in Google AI Studio eingeben → „Build App" klicken → in ca. 30 Sekunden entsteht ein lauffähiger Prototyp.</p>
+    </div>
+    <div class="step-box">
+      <div class="sn">3</div>
+      <h4>Verifizieren &amp; Iterieren</h4>
+      <p>Testen Sie mit Ihrem Testtext, dokumentieren Sie Fehler und Halluzinationen im Fail Log, verfeinern Sie den Prompt. Mindestens 3 Runden.</p>
+    </div>
+  </div>
+
+  <div class="platform-box">
+    <h3>🛠️ Google AI Studio in 5 Schritten öffnen</h3>
+    <ol>
+      <li>Browser öffnen und <strong>aistudio.google.com</strong> aufrufen</li>
+      <li>Mit Google-Konto anmelden (kostenlos, kein Abo erforderlich)</li>
+      <li>Oben links auf <strong>„Build"</strong> klicken – <em>nicht</em> auf „Chat"</li>
+      <li>Im Eingabefeld den <strong>System Prompt</strong> aus diesem Leitfaden einfügen</li>
+      <li>Auf <strong>„Build App"</strong> klicken und ca. 30 Sekunden warten</li>
+    </ol>
+    <div class="pb-url">aistudio.google.com → Build → App</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ct-icon">🗺️</span> Was Sie in diesem Leitfaden finden</div>
+    <div class="two-col">
+      <div>
+        <p class="sec-h3">Für jede der 15 Apps:</p>
+        <ul class="list">
+          <li>📄 <strong>Planung</strong> – Was, Warum, für Wen, Input, Output</li>
+          <li>🔧 <strong>Prompts</strong> – fertige System Prompts zum Kopieren</li>
+          <li>🔄 <strong>Iterations-Prompts</strong> – für 3+ Verbesserungsrunden</li>
+          <li>📊 <strong>Beispiel-Output</strong> – wie das Ergebnis aussehen soll</li>
+          <li>💡 <strong>Tipps &amp; typische Fehler</strong> – mit Lösungen</li>
+        </ul>
+      </div>
+      <div>
+        <p class="sec-h3">Außerdem:</p>
+        <ul class="list">
+          <li>⚙️ <strong>Methode</strong> – RAFE-Prinzip für gute Prompts</li>
+          <li>⚖️ <strong>KI-Plattformvergleich</strong> – Google / Claude / GPT</li>
+          <li>🔧 <strong>Troubleshooting</strong> – 6 häufige Probleme + Lösungen</li>
+          <li>🧪 <strong>Halluzinationstest</strong> – Schritt für Schritt</li>
+          <li>✅ <strong>Abgabe-Checkliste</strong> + Fail-Log-Vorlage</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ╔═══════════════════════════════════════╗
+     ║  SEKTION 2: METHODE                  ║
+     ╚═══════════════════════════════════════╝ -->
+<div id="s-methode" class="section" role="tabpanel">
+
+  <div class="card">
+    <div class="card-title"><span class="ct-icon">⚙️</span> Das RAFE-Prinzip – Wie gute Prompts aufgebaut sind</div>
+    <p class="para">
+      Ein System Prompt ist die Stellenbeschreibung für die KI. Je präziser die Beschreibung,
+      desto zuverlässiger das linguistische Ergebnis. Gute Prompts folgen dem <strong>RAFE-Prinzip</strong>:
+    </p>
+  </div>
+
+  <div class="rafe-grid">
+    <div class="rafe-card">
+      <div class="rafe-letter" style="background:#6C3483">R</div>
+      <h4>Rolle</h4>
+      <p>Wer <em>ist</em> die KI? Eine klar definierte fachliche Rolle verbessert die Analysequalität messbar.</p>
+      <div class="rafe-ex">„Du bist ein Syntax-Experte für deutschsprachige Medientexte."</div>
+    </div>
+    <div class="rafe-card">
+      <div class="rafe-letter" style="background:#E67E22">A</div>
+      <h4>Aufgabe</h4>
+      <p>Was soll analysiert werden? Konkret, mit Beispiel und sprachlicher Definition des Phänomens.</p>
+      <div class="rafe-ex">„Identifiziere alle Vorgangspassiv-Konstruktionen (werden + Partizip II)."</div>
+    </div>
+    <div class="rafe-card">
+      <div class="rafe-letter" style="background:#1ABC9C">F</div>
+      <h4>Format</h4>
+      <p>Wie soll die Ausgabe strukturiert sein? Tabelle, Liste, Fließtext – explizit vorgeben.</p>
+      <div class="rafe-ex">„Gib die Ergebnisse als Tabelle: Textstelle | Typ | Funktion."</div>
+    </div>
+    <div class="rafe-card">
+      <div class="rafe-letter" style="background:#C0392B">E</div>
+      <h4>Einschränkungen</h4>
+      <p>Was soll die KI <em>nicht</em> tun? Klare Grenzen reduzieren Halluzinationen erheblich.</p>
+      <div class="rafe-ex">„Zitiere ausschließlich Textstellen, die wörtlich vorkommen."</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:8px">
+    <div class="card-title"><span class="ct-icon">📐</span> Universelle Prompt-Vorlage (kopierbar)</div>
+    <div class="prompt-wrap">
+      <div class="prompt-label-bar">
+        <span>System Prompt – Vorlage</span>
+        <span style="color:#5D7E9A;font-size:.72rem">Google AI Studio · Claude · ChatGPT</span>
+      </div>
+      <div class="prompt-block">Du bist [ROLLE – z.B. ein spezialisierter linguistischer Assistent für deutschsprachige Texte].
+
+Deine Aufgabe:
+– Analysiere den folgenden Text auf [MERKMAL – z.B. Passivkonstruktionen]
+– Identifiziere [STRUKTUREN – z.B. Vorgangspassiv, Zustandspassiv, Infinitivpassiv]
+– Klassifiziere nach [KATEGORIEN – z.B. Typ und pragmatische Funktion]
+
+Ausgabeformat:
+– Gib die Ergebnisse als Tabelle mit den Spalten: [SPALTEN – z.B. Textstelle | Typ | Funktion]
+– Fasse am Ende in 2–3 Sätzen zusammen (Häufigkeit, Muster, stilistische Bewertung)
+
+Wichtige Regeln:
+1. Trenne Beobachtung und Interpretation klar voneinander
+2. Zitiere ausschließlich Textstellen, die wörtlich im eingefügten Text vorkommen
+3. Gib Unsicherheiten offen an (z.B. mit „möglicherweise" oder „unklar")
+4. Beschränke die Ausgabe auf maximal 10 Befunde
+5. Antworte vollständig auf Deutsch</div>
+    </div>
+    <button class="copy-btn" data-copy="Du bist [ROLLE].&#10;&#10;Deine Aufgabe:&#10;– Analysiere den Text auf [MERKMAL]&#10;– Identifiziere [STRUKTUREN]&#10;&#10;Ausgabeformat:&#10;– Tabelle: [SPALTEN]&#10;– Zusammenfassung (2–3 Sätze)&#10;&#10;Wichtige Regeln:&#10;1. Beobachtung von Interpretation trennen&#10;2. Nur wörtliche Textzitate&#10;3. Unsicherheiten offen angeben&#10;4. Max. 10 Befunde&#10;5. Auf Deutsch antworten" onclick="copyBtn(this)">📋 Vorlage kopieren</button>
+  </div>
+
+  <h2 class="sec-h2">🔄 Das Iterations-Prinzip</h2>
+  <div class="card">
+    <p class="para">Ihr erster Prompt wird nicht perfekt sein – das ist völlig normal und wissenschaftlich erwünscht. Jede Verbesserungsrunde ist ein Eintrag im Fail Log.</p>
+    <ul class="steps-list" aria-label="Iterations-Schritte">
+      <li>
+        <div class="step-circle">1</div>
+        <div class="step-text">
+          <h4>Ersten Prompt eingeben und App generieren</h4>
+          <p>Testen Sie mit einem kurzen Textauszug (200–300 Wörter) aus einer realen deutschen Quelle.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-circle">2</div>
+        <div class="step-text">
+          <h4>Output kritisch prüfen</h4>
+          <p>Was ist korrekt? Was fehlt? Was wurde erfunden (halluziniert)? → Alles im Fail Log notieren.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-circle">3</div>
+        <div class="step-text">
+          <h4>Einen Aspekt gezielt verbessern</h4>
+          <p>Präzisieren Sie Format, fügen Sie ein Beispiel hinzu oder verschärfen Sie die Einschränkungen.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-circle">4</div>
+        <div class="step-text">
+          <h4>Mindestens 3× wiederholen</h4>
+          <p>Jede Iteration = ein Eintrag im Fail Log mit: Prompt-Version | Problem | Ursache | Verbesserung.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <h2 class="sec-h2">⚖️ Welche KI für welche Aufgabe?</h2>
+  <div class="card">
+    <p class="para">Für diese Lehrveranstaltung empfehlen wir <strong>Google AI Studio</strong> als primäre Plattform, da sie einen vollständigen App-Builder anbietet und kostenlos ist. Für Tiefenanalysen können Sie Claude oder ChatGPT ergänzend verwenden.</p>
+    <div class="table-wrap"><table class="data-table" aria-label="KI-Plattformvergleich">
+      <thead>
+        <tr><th>Plattform</th><th>Stärken</th><th>Einschränkungen</th><th>Empfehlung</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Google AI Studio</strong></td>
+          <td class="pro">App-Builder integriert, kostenlos, schnell, teilbare App-Links</td>
+          <td class="con">Gelegentlich höhere Halluzinationsrate bei Fachthemen</td>
+          <td>✅ <strong>Prototyp bauen</strong></td>
+        </tr>
+        <tr>
+          <td><strong>Claude (Anthropic)</strong></td>
+          <td class="pro">Sehr präzise, geringe Halluzinationsrate, lange Dokumente, Quellenangabe</td>
+          <td class="con">Kein App-Builder, nur Chat/Analyse</td>
+          <td>✅ <strong>Tiefenanalyse</strong></td>
+        </tr>
+        <tr>
+          <td><strong>ChatGPT (OpenAI)</strong></td>
+          <td class="pro">Vielseitig, GPT-Builder für einfache Agents möglich</td>
+          <td class="con">GPT-4 kostenpflichtig, Datenschutz beachten (DSGVO)</td>
+          <td>✅ <strong>Vergleichstest</strong></td>
+        </tr>
+      </tbody>
+    </table></div>
+    <div class="hint warn">
+      <span class="hint-icon">⚠️</span>
+      <div><strong>Datenschutzhinweis:</strong> Verwenden Sie in KI-Systemen keine personenbezogenen Daten identifizierbarer Personen. Für Lernertexte (DaF Feedback Agent): ausschließlich anonymisierte Beispieltexte verwenden.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ╔═══════════════════════════════════════╗
+     ║  SEKTION 3: 15 APP-IDEEN             ║
+     ╚═══════════════════════════════════════╝ -->
+<div id="s-apps" class="section" role="tabpanel">
+
+  <p class="para">Klicken Sie auf ein Thema, um Planung, Prompts, Beispiel-Output und Tipps zu sehen. Jede App enthält einen fertigen System Prompt, den Sie direkt kopieren und in Google AI Studio einfügen können.</p>
+
+  <!-- ⭐ EINSTIEG -->
+  <div class="level-divider">
+    <span class="level-badge lvl-e">⭐ Einstieg</span>
+    <h2>Ohne Vorkenntnisse startbar</h2>
+  </div>
+  <div class="topic-grid" role="list">
+    <div class="topic-card e-card" role="listitem" tabindex="0" onclick="showTopic('passiv')"    onkeydown="if(event.key==='Enter')showTopic('passiv')">
+      <div class="tc-icon">🔍</div><div class="tc-name">Passiv-Checker</div><div class="tc-tag">Morphosyntax</div>
+    </div>
+    <div class="topic-card e-card" role="listitem" tabindex="0" onclick="showTopic('nominal')"   onkeydown="if(event.key==='Enter')showTopic('nominal')">
+      <div class="tc-icon">📝</div><div class="tc-name">Nominalstil-Detektor</div><div class="tc-tag">Stilistik</div>
+    </div>
+    <div class="topic-card e-card" role="listitem" tabindex="0" onclick="showTopic('satz')"      onkeydown="if(event.key==='Enter')showTopic('satz')">
+      <div class="tc-icon">📏</div><div class="tc-name">Satzlängen-Analyzer</div><div class="tc-tag">Lesbarkeit / HVM</div>
+    </div>
+    <div class="topic-card e-card" role="listitem" tabindex="0" onclick="showTopic('fachwort')"  onkeydown="if(event.key==='Enter')showTopic('fachwort')">
+      <div class="tc-icon">🔑</div><div class="tc-name">Fachwort-Extraktor</div><div class="tc-tag">Terminologie</div>
+    </div>
+    <div class="topic-card e-card" role="listitem" tabindex="0" onclick="showTopic('ger')"       onkeydown="if(event.key==='Enter')showTopic('ger')">
+      <div class="tc-icon">🎓</div><div class="tc-name">GER-Level Analyzer</div><div class="tc-tag">DaF / Sprachstandsdiagnose</div>
+    </div>
+  </div>
+
+  <!-- ⚡ FORTGESCHRITTEN -->
+  <div class="level-divider">
+    <span class="level-badge lvl-f">⚡ Fortgeschritten</span>
+    <h2>Mit linguistischen Vorkenntnissen</h2>
+  </div>
+  <div class="topic-grid" role="list">
+    <div class="topic-card f-card" role="listitem" tabindex="0" onclick="showTopic('clickbait')" onkeydown="if(event.key==='Enter')showTopic('clickbait')">
+      <div class="tc-icon">🖱️</div><div class="tc-name">Clickbait-Detector</div><div class="tc-tag">Medienlinguistik</div>
+    </div>
+    <div class="topic-card f-card" role="listitem" tabindex="0" onclick="showTopic('daf')"       onkeydown="if(event.key==='Enter')showTopic('daf')">
+      <div class="tc-icon">✍️</div><div class="tc-name">DaF Feedback Agent</div><div class="tc-tag">Deutsch als Fremdsprache</div>
+    </div>
+    <div class="topic-card f-card" role="listitem" tabindex="0" onclick="showTopic('kolloka')"   onkeydown="if(event.key==='Enter')showTopic('kolloka')">
+      <div class="tc-icon">🔗</div><div class="tc-name">Kollokationsfinder</div><div class="tc-tag">Korpuslinguistik</div>
+    </div>
+    <div class="topic-card f-card" role="listitem" tabindex="0" onclick="showTopic('gendering')" onkeydown="if(event.key==='Enter')showTopic('gendering')">
+      <div class="tc-icon">♾️</div><div class="tc-name">Gendering-Analyse</div><div class="tc-tag">Soziolinguistik</div>
+    </div>
+    <div class="topic-card f-card" role="listitem" tabindex="0" onclick="showTopic('korpus')"    onkeydown="if(event.key==='Enter')showTopic('korpus')">
+      <div class="tc-icon">🗄️</div><div class="tc-name">Korpus-Assistent</div><div class="tc-tag">Korpuslinguistik</div>
+    </div>
+  </div>
+
+  <!-- 🚀 EXPERTEN -->
+  <div class="level-divider">
+    <span class="level-badge lvl-ex">🚀 Experten</span>
+    <h2>Mit Theorie-Kenntnissen</h2>
+  </div>
+  <div class="topic-grid" role="list">
+    <div class="topic-card ex-card" role="listitem" tabindex="0" onclick="showTopic('dialekt')"  onkeydown="if(event.key==='Enter')showTopic('dialekt')">
+      <div class="tc-icon">🗺️</div><div class="tc-name">Dialekt-Classifier</div><div class="tc-tag">Varietätenlinguistik</div>
+    </div>
+    <div class="topic-card ex-card" role="listitem" tabindex="0" onclick="showTopic('sentiment')" onkeydown="if(event.key==='Enter')showTopic('sentiment')">
+      <div class="tc-icon">📈</div><div class="tc-name">Sentiment-Timeline</div><div class="tc-tag">Computerlinguistik</div>
+    </div>
+    <div class="topic-card ex-card" role="listitem" tabindex="0" onclick="showTopic('stil')"     onkeydown="if(event.key==='Enter')showTopic('stil')">
+      <div class="tc-icon">🔄</div><div class="tc-name">Stil-Komparator</div><div class="tc-tag">Stilometrie</div>
+    </div>
+    <div class="topic-card ex-card" role="listitem" tabindex="0" onclick="showTopic('metapher')" onkeydown="if(event.key==='Enter')showTopic('metapher')">
+      <div class="tc-icon">🎭</div><div class="tc-name">Metaphern-Extraktor</div><div class="tc-tag">Kognitive Linguistik</div>
+    </div>
+    <div class="topic-card ex-card" role="listitem" tabindex="0" onclick="showTopic('register')" onkeydown="if(event.key==='Enter')showTopic('register')">
+      <div class="tc-icon">📊</div><div class="tc-name">Registeranalyse-Tool</div><div class="tc-tag">Textlinguistik</div>
+    </div>
+  </div>
+
+  <!-- DETAIL PANEL -->
+  <div id="detail-panel" aria-live="polite">
+    <div id="dp-header" class="dp-header">
+      <span id="dp-badge" class="dp-badge"></span>
+      <h2 id="dp-title"></h2>
+      <p  id="dp-sub"></p>
+    </div>
+    <div class="dp-body">
+      <div class="dp-tabs" role="tablist" aria-label="App-Details">
+        <button class="dp-tab active" role="tab" onclick="showDpTab('plan',this)">📄 Planung</button>
+        <button class="dp-tab"        role="tab" onclick="showDpTab('prompt',this)">🔧 Prompts</button>
+        <button class="dp-tab"        role="tab" onclick="showDpTab('output',this)">📊 Beispiel-Output</button>
+        <button class="dp-tab"        role="tab" onclick="showDpTab('tipps',this)">💡 Tipps &amp; Fehler</button>
+      </div>
+      <div id="dp-plan"   class="dp-tab-content active"></div>
+      <div id="dp-prompt" class="dp-tab-content"></div>
+      <div id="dp-output" class="dp-tab-content"></div>
+      <div id="dp-tipps"  class="dp-tab-content"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ╔═══════════════════════════════════════╗
+     ║  SEKTION 4: TROUBLESHOOTING          ║
+     ╚═══════════════════════════════════════╝ -->
+<div id="s-trouble" class="section" role="tabpanel">
+
+  <div class="card">
+    <div class="card-title"><span class="ct-icon">🚨</span> Die 6 häufigsten Probleme und Lösungen</div>
+
+    <div class="ts-item">
+      <h4>Problem 1 – Die KI erfindet Textstellen (Halluzination)</h4>
+      <p>Die KI zitiert Sätze oder Belege, die im Originaltext gar nicht vorkommen.</p>
+      <div class="ts-fix">✅ <strong>Lösung:</strong> Fügen Sie hinzu: <em>„Zitiere ausschließlich Textstellen, die buchstabengetreu im folgenden Text vorkommen. Wenn du unsicher bist, schreibe: UNSICHER."</em></div>
+    </div>
+
+    <div class="ts-item">
+      <h4>Problem 2 – Die Ausgabe ist unstrukturiert (Fließtext statt Tabelle)</h4>
+      <p>Die KI ignoriert die Formatanweisung und gibt einen langen, schwer lesbaren Fließtext aus.</p>
+      <div class="ts-fix">✅ <strong>Lösung:</strong> Format explizit und als erste Regel formulieren: <em>„Antworte AUSSCHLIESSLICH in Tabellenform mit den Spalten: [Spalte 1] | [Spalte 2] | [Spalte 3]. Kein erklärender Fließtext davor."</em></div>
+    </div>
+
+    <div class="ts-item">
+      <h4>Problem 3 – Die KI analysiert das falsche sprachliche Phänomen</h4>
+      <p>Statt Passiv-Konstruktionen identifiziert die KI z.B. Adjektive oder andere Formen.</p>
+      <div class="ts-fix">✅ <strong>Lösung:</strong> Phänomen mit einem Positivbeispiel und einem Negativbeispiel definieren: <em>„Mit Vorgangspassiv meine ich: 'Das Buch wurde gelesen' = Vorgangspassiv. NICHT gemeint: 'Das Buch ist interessant' (kein Passiv)."</em></div>
+    </div>
+
+    <div class="ts-item">
+      <h4>Problem 4 – Google AI Studio lädt sehr lange oder zeigt einen Fehler</h4>
+      <p>Der Build-Prozess dauert mehr als 2 Minuten oder bricht mit einer Fehlermeldung ab.</p>
+      <div class="ts-fix">✅ <strong>Lösung:</strong> Seite neu laden (F5), Prompt um ca. 30% kürzen (weniger Beispiele), dann erneut versuchen. Alternativ: denselben Prompt in Claude oder ChatGPT testen und Ergebnis vergleichen.</div>
+    </div>
+
+    <div class="ts-item">
+      <h4>Problem 5 – Die Analyse wirkt textunabhängig und generisch</h4>
+      <p>Das Ergebnis klingt, als hätte die KI den Text gar nicht gelesen, sondern allgemeines Wissen verwendet.</p>
+      <div class="ts-fix">✅ <strong>Lösung:</strong> Am Ende des Prompts ergänzen: <em>„Analysiere AUSSCHLIESSLICH den folgenden spezifischen Text. Nenne konkrete Wörter und Satznummern. Beginne NICHT mit einer allgemeinen Einleitung."</em></div>
+    </div>
+
+    <div class="ts-item">
+      <h4>Problem 6 – Die KI antwortet auf Englisch statt auf Deutsch</h4>
+      <p>Die Ausgabe erfolgt in englischer Sprache, obwohl der Eingabetext Deutsch ist.</p>
+      <div class="ts-fix">✅ <strong>Lösung:</strong> Als erste Regel im Prompt festlegen: <em>„Antworte ausschließlich auf Deutsch. Alle Kategorienbezeichnungen, Erklärungen und Zusammenfassungen auf Deutsch verfassen."</em></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ct-icon">🧪</span> Der Halluzinations-Test (Pflichtbestandteil!)</div>
+    <p class="para">
+      Testen Sie nach <em>jeder</em> Analyse, ob die KI korrekt zitiert. Ein entdeckter Fehler ist kein Problem –
+      er ist ein wissenschaftlicher Befund über die Grenzen von Sprachmodellen.
+    </p>
+    <ul class="steps-list" aria-label="Halluzinations-Test Schritte">
+      <li>
+        <div class="step-circle">1</div>
+        <div class="step-text">
+          <h4>KI-Ergebnis erhalten</h4>
+          <p>Lesen Sie die gesamte Ausgabe der KI durch, bevor Sie weitermachen.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-circle">2</div>
+        <div class="step-text">
+          <h4>Ein Zitat herausgreifen</h4>
+          <p>Wählen Sie einen konkreten Textbeleg, den die KI verwendet hat.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-circle">3</div>
+        <div class="step-text">
+          <h4>Im Originaltext suchen (Strg+F)</h4>
+          <p>Öffnen Sie Ihren Testtext und suchen Sie das Zitat buchstabengetreu.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-circle">4</div>
+        <div class="step-text">
+          <h4>Ergebnis im Fail Log dokumentieren</h4>
+          <p>Zitat vorhanden: ✅ korrekt | Zitat nicht auffindbar: ❌ Halluzination → im Fail Log eintragen und Prompt verbessern.</p>
+        </div>
+      </li>
+    </ul>
+    <div class="hint warn">
+      <span class="hint-icon">⚠️</span>
+      <div><strong>Wichtig:</strong> Eine Halluzination ist kein Fehler Ihrer Arbeit.
+        Sie ist ein wertvoller wissenschaftlicher Befund über die Zuverlässigkeit des Sprachmodells.
+        Dokumentieren Sie alle Halluzinationen sorgfältig im Fail Log.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ╔═══════════════════════════════════════╗
+     ║  SEKTION 5: CHECKLISTE               ║
+     ╚═══════════════════════════════════════╝ -->
+<div id="s-checklist" class="section" role="tabpanel">
+
+  <div class="card">
+    <div class="card-title"><span class="ct-icon">✅</span> Abgabe-Checkliste · Deadline: 14.06.2026, 23:59 Uhr</div>
+    <p class="para">Haken Sie jeden Punkt ab, bevor Sie die Abgabe auf ISIS hochladen.</p>
+    <div id="cl-list" role="list" aria-label="Abgabe-Checkliste"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ct-icon">📋</span> Fail Log – Vorlage (in Ihr Protokoll einfügen)</div>
+    <p class="para">Mindestens 3 vollständige Einträge werden erwartet. Auch gescheiterte Versuche zählen – sie sind besonders wertvoll.</p>
+    <div class="table-wrap"><table class="data-table" aria-label="Fail Log Vorlage">
+      <thead>
+        <tr><th>Iteration</th><th>Prompt (Kurzfassung)</th><th>Problem / Fehler</th><th>Ursache (Vermutung)</th><th>Verbesserter Prompt</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>#1</td><td><em>z.B. „Analysiere Passiv im Text…"</em></td><td><em>z.B. Halluziniertes Zitat</em></td><td><em>z.B. Kein Zitier-Constraint im Prompt</em></td><td><em>z.B. „Zitiere nur wörtlich…" ergänzt</em></td></tr>
+        <tr><td>#2</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>#3</td><td></td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ct-icon">🏆</span> Bewertungskriterien (20 Punkte)</div>
+    <div class="table-wrap"><table class="data-table" aria-label="Bewertungskriterien">
+      <thead><tr><th>Kriterium</th><th style="width:80px;text-align:center">Max. Punkte</th><th>Erwartung</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Prototyp funktioniert (Live-Demo)</strong></td><td style="text-align:center"><strong>6</strong></td><td>Tool läuft, analysiert korrekt, Link oder Screenshot vorhanden</td></tr>
+        <tr><td><strong>Linguistische Relevanz des Tools</strong></td><td style="text-align:center"><strong>5</strong></td><td>Echtes sprachliches Problem, klare Zielsetzung</td></tr>
+        <tr><td><strong>Fail Log: Qualität der Dokumentation</strong></td><td style="text-align:center"><strong>4</strong></td><td>Mind. 3 Einträge, Halluzinationstest dokumentiert</td></tr>
+        <tr><td><strong>Protokoll: Vollständigkeit &amp; Reflexion</strong></td><td style="text-align:center"><strong>3</strong></td><td>Alle Felder ausgefüllt, kritische Reflexion (2–3 Sätze)</td></tr>
+        <tr><td><strong>Präsentation (Struktur, Klarheit, 3 Min.)</strong></td><td style="text-align:center"><strong>2</strong></td><td>Klare Struktur, Live-Demo, Best Fail Award</td></tr>
+        <tr><td><em>Sonderleistung (kreativer Ansatz, hervorragendes Design etc.)</em></td><td style="text-align:center"><em>+ 0–2</em></td><td>Zusatzpunkte nach Ermessen</td></tr>
+      </tbody>
+    </table></div>
+    <div class="hint tip" style="margin-top:12px">
+      <span class="hint-icon">💡</span>
+      <div><strong>Tipp zum Best Fail Award:</strong> Bereiten Sie Ihren „lustigsten" oder überraschendsten KI-Fehler für die Plenumsdiskussion vor. Fehler zu teilen ist Teil der wissenschaftlichen Kultur – und wird bei der Bewertung positiv berücksichtigt.</div>
+    </div>
+  </div>
+
+</div>
+</main>
+
+<footer role="contentinfo">
+  <strong>AI Linguistics Studio · SoSe 2026</strong><br>
+  PD Dr. See-Young Cho · Institut für Sprache und Kommunikation · Technische Universität Berlin<br>
+  <span style="font-size:.75rem;opacity:.7">Dieser Leitfaden wurde mit Unterstützung von Claude (Anthropic) erstellt. · Stand: Juni 2026</span>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════
+     TOPIC DATA (vollständig, mit korrekten Umlauten)
+═══════════════════════════════════════════════════ -->
+<script>
+'use strict';
+
+/* ── Navigation ─────────────────────────────────── */
+function showSection(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+  document.getElementById('s-' + id).classList.add('active');
+  if (btn) { btn.classList.add('active'); btn.setAttribute('aria-selected','true'); }
+  document.getElementById('detail-panel').classList.remove('open');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ── Detail-Tabs ─────────────────────────────────── */
+function showDpTab(id, btn) {
+  document.querySelectorAll('.dp-tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.dp-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('dp-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+/* ── Kopier-Funktion ─────────────────────────────── */
+function copyBtn(btn) {
+  // data-copy Attribut lesen; &#10; → echte Zeilenumbrüche
+  let text = (btn.getAttribute('data-copy') || '')
+    .replace(/&#10;/g, '\n')
+    .replace(/&amp;/g, '&')
+    .replace(/&apos;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>');
+  const orig = btn.innerHTML;
+  if (!navigator.clipboard) {
+    // Fallback für ältere Browser / HTTP
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); btn.innerHTML = '✅ Kopiert!'; btn.classList.add('copied'); }
+    catch { btn.innerHTML = '⚠️ Manuell kopieren'; }
+    document.body.removeChild(ta);
+    setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2200);
+    return;
+  }
+  navigator.clipboard.writeText(text).then(() => {
+    btn.innerHTML = '✅ Kopiert!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2200);
+  }).catch(() => {
+    btn.innerHTML = '⚠️ Manuell kopieren';
+    setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2200);
+  });
+}
+
+/* Legacy-Alias (falls noch irgendwo copyText aufgerufen wird) */
+function copyText(btn, text) { btn.setAttribute('data-copy', text); copyBtn(btn); }
+
+/* ── Checkliste ──────────────────────────────────── */
+const CL_ITEMS = [
+  'Protokoll (vollständig ausgefüllt) als PDF',
+  'Fail Log (mindestens 3 Einträge, inkl. Halluzinationstest)',
+  'Screenshot(s) des Prototyps (mindestens 1 Screenshot pro Iteration)',
+  'Link zur App ODER vollständiger Prompt-Text als Textdatei',
+  'Gruppenname und alle Mitglieder vollständig angegeben',
+  'Kritische Reflexion (2–3 Sätze im Protokoll zu KI-Grenzen und Ergebnissen)',
+];
+document.getElementById('cl-list').innerHTML = CL_ITEMS.map((item, i) => `
+  <div class="cl-item" role="listitem" id="cli-wrap-${i}">
+    <input type="checkbox" id="cl-${i}" aria-label="${item}" onchange="toggleCl(${i})">
+    <label for="cl-${i}">${item}</label>
+  </div>`).join('');
+function toggleCl(i) {
+  const wrap = document.getElementById('cli-wrap-' + i);
+  wrap.classList.toggle('done', document.getElementById('cl-' + i).checked);
+}
+
+/* ══════════════════════════════════════════════════════
+   TOPIC-DATEN
+══════════════════════════════════════════════════════ */
+const TOPICS = {
+
+/* ─── PASSIV-CHECKER ───────────────────────────── */
+passiv: {
+  name:'Passiv-Checker', icon:'🔍', level:'e',
+  badge:'⭐ Einstieg', badgeBg:'#1D8348',
+  sub:'Erkennt und klassifiziert Passivkonstruktionen in deutschen Texten nach Typ und pragmatischer Funktion',
+  plan:`
+    <h3 class="sec-h3">📄 Planung</h3>
+    <div class="table-wrap"><table class="plan-table">
+      <tr><th>Was?</th><td>Ein Tool, das alle Passivkonstruktionen in einem deutschen Text erkennt und ihren Typ sowie ihre pragmatische Funktion bestimmt.</td></tr>
+      <tr><th>Warum?</th><td>Passiv ist ein zentrales Stilmittel in wissenschaftlichen, journalistischen und bürokratischen Texten. Die manuelle Analyse ist zeitaufwändig; KI kann sie erheblich beschleunigen.</td></tr>
+      <tr><th>Für wen?</th><td>DaF-Lernende, Studierende der Textlinguistik, Wissenschaftsjournalist:innen, Behörden-Redakteur:innen</td></tr>
+      <tr><th>Idealer Testtext</th><td>Wikipedia-Artikel (Wissenschaft/Technik), Zeitungsberichte, Gesetzestexte (Bundesgesetzblatt), wissenschaftliche Abstracts</td></tr>
+      <tr><th>Erwarteter Output</th><td>Tabelle mit Passivvorkommen, Typ und Funktion + Häufigkeitsauswertung + Stilbewertung</td></tr>
+    </table></div>
+    <h3 class="sec-h3" style="margin-top:18px">🔬 Linguistischer Hintergrund</h3>
+    <ul class="list">
+      <li><strong>Vorgangspassiv</strong> (werden + Partizip II): „Das Gesetz <em>wurde beschlossen</em>" → Agens-Tilgung</li>
+      <li><strong>Zustandspassiv</strong> (sein + Partizip II): „Die Tür <em>ist geöffnet</em>" → resultierender Zustand</li>
+      <li><strong>Infinitivpassiv</strong> (sein + zu + Infinitiv): „Das Ergebnis <em>ist zu beachten</em>" → implizierte Verpflichtung</li>
+      <li><strong>Bekommen-Passiv</strong>: „Sie <em>bekommt</em> das Paket <em>geliefert</em>" → Rezipientenorientierung</li>
+    </ul>
+    <div class="hint info"><span class="hint-icon">ℹ️</span><div><strong>Tipp:</strong> Wissenschaftstexte haben die höchste Passivdichte (bis zu 40% aller Verben). Zeitungstexte ca. 15–20%. Alltagssprache unter 5%.</div></div>`,
+  prompt:`
+    <h3 class="sec-h3">🔧 System Prompt – Version 1 (Basis)</h3>
+    <div class="prompt-wrap">
+      <div class="prompt-label-bar"><span>System Prompt · Passiv-Checker v1</span></div>
+      <div class="prompt-block">Du bist ein Linguistik-Assistent mit Schwerpunkt auf Morphosyntax und Stilistik deutschsprachiger Texte.
+
+Deine Aufgabe:
+Analysiere den folgenden Text ausschließlich auf Passivkonstruktionen.
+
+Erkenne diese Typen (mit Definition und Beispiel):
+– Vorgangspassiv: werden + Partizip II → „Das Buch wurde gelesen"
+– Zustandspassiv: sein + Partizip II (Zustandsbedeutung) → „Die Tür ist geöffnet"
+– Infinitivpassiv: sein + zu + Infinitiv → „Das ist zu beachten"
+– Bekommen-Passiv: bekommen/kriegen/erhalten + Partizip II → „Sie bekommt das Paket geliefert"
+
+Ausgabeformat (Tabelle, keine Spalte weglassen):
+| Nr. | Textstelle (wörtliches Zitat) | Typ | Pragmatische Funktion |
+
+Nach der Tabelle: 3–4 Sätze Zusammenfassung mit Häufigkeit, dominantem Typ und stilistischer Einordnung.
+
+Wichtige Regeln:
+1. Zitiere ausschließlich Wortgruppen, die buchstabengetreu im Text stehen
+2. Maximal 12 Einträge
+3. Unsichere Fälle mit „(fraglich)" markieren
+4. Adjektive auf -bar, -lich sind KEIN Passiv
+5. Antworte vollständig auf Deutsch</div>
+    </div>
+    <button class="copy-btn" data-copy="Du bist ein Linguistik-Assistent für Morphosyntax und Stilistik.&#10;&#10;Analysiere den Text auf Passivkonstruktionen:&#10;– Vorgangspassiv: werden + Partizip II&#10;– Zustandspassiv: sein + Partizip II&#10;– Infinitivpassiv: sein + zu + Infinitiv&#10;– Bekommen-Passiv&#10;&#10;Ausgabe (Tabelle):&#10;| Nr. | Textstelle | Typ | Funktion |&#10;+ Zusammenfassung (3–4 Sätze)&#10;&#10;Regeln: Nur wörtliche Zitate, max. 12 Einträge, Unsichere als (fraglich), auf Deutsch." onclick="copyBtn(this)">📋 Prompt v1 kopieren</button>
+
+    <h3 class="sec-h3" style="margin-top:22px">🔄 Iterations-Prompt – Version 2 (bei Überklassifikation)</h3>
+    <div class="hint tip"><span class="hint-icon">💡</span><div>Verwenden Sie diesen Zusatz, wenn die KI zu viele oder falsche Treffer produziert.</div></div>
+    <div class="prompt-wrap">
+      <div class="prompt-label-bar"><span>Ergänzung zum Basis-Prompt · v2</span></div>
+      <div class="prompt-block">Ergänze die vorherigen Regeln um:
+
+Ausschlussliste – diese Formen sind KEIN Passiv:
+– Adjektive auf -bar, -lich, -sam (z.B. „lesbar", „möglich", „denkbar")
+– Stative Zustandsverben ohne Passiv-Bedeutung (z.B. „Das Buch liegt geöffnet")
+– Partizipialattribute ohne Passivbedeutung (z.B. „die abgelaufene Frist")
+
+Zusatz: Gib für jeden Treffer die Satznummer im Originaltext an.</div>
+    </div>
+    <button class="copy-btn" data-copy="Ergänzung: Ausschlussliste – KEIN Passiv:&#10;– Adjektive auf -bar, -lich, -sam&#10;– Stative Zustandsverben&#10;– Partizipialattribute ohne Passivbedeutung&#10;&#10;Zusatz: Satznummer für jeden Treffer angeben." onclick="copyBtn(this)">📋 Prompt v2 kopieren</button>`,
+  output:`
+    <h3 class="sec-h3">📊 So sieht ein guter Output aus</h3>
+    <div class="output-box ob-ok">
+      <div class="ob-label">✅ Korrekter, gut strukturierter Output</div>
+      <div class="table-wrap"><table class="data-table" style="margin-top:8px">
+        <thead><tr><th>Nr.</th><th>Textstelle</th><th>Typ</th><th>Funktion</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><span class="hl-ok">„wurde beschlossen"</span></td><td>Vorgangspassiv</td><td>Agens-Tilgung – Entscheidungsträger anonym</td></tr>
+          <tr><td>2</td><td><span class="hl-ok">„ist zu beachten"</span></td><td>Infinitivpassiv</td><td>Allg. Verpflichtung ohne konkreten Akteur</td></tr>
+          <tr><td>3</td><td><span class="hl-ok">„sind eingeführt worden"</span></td><td>Vorgangspassiv (Perf.)</td><td>Zustand als Ergebnis eines Prozesses</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:10px;font-size:.86rem;color:#4B5563"><strong>Zusammenfassung:</strong> Der Text enthält 7 Passivkonstruktionen bei 312 Wörtern (2,2%). Das Vorgangspassiv dominiert (5×), was auf eine systematische Agens-Tilgung und einen formell-bürokratischen Stil hinweist.</p>
+    </div>
+    <div class="output-box ob-bad" style="margin-top:12px">
+      <div class="ob-label">❌ Halluzination – so sieht ein problematischer Output aus</div>
+      <p style="font-size:.86rem;color:#4B5563">Die KI zitiert: <span class="hl-bad">„wird analysiert"</span> – diese Phrase kommt im Originaltext gar nicht vor. → Halluzination! → Im Fail Log dokumentieren und Prompt um Zitier-Constraint erweitern.</p>
+    </div>`,
+  tipps:`
+    <div class="hint tip"><span class="hint-icon">💡</span><div><strong>Beste Testtexte:</strong> Wikipedia-Artikel aus den Bereichen Wissenschaft, Technik oder Geschichte. Gesetzestexte aus dem Bundesgesetzblatt (gesetze-im-internet.de). Abstracts wissenschaftlicher Aufsätze.</div></div>
+    <div class="hint info"><span class="hint-icon">ℹ️</span><div><strong>Manuelle Vergleichsanalyse:</strong> Zählen Sie mit Strg+F nach den Formen „wurde", „worden", „wird", „werden", „ist … worden". Vergleichen Sie Ihre Zählung mit dem KI-Ergebnis.</div></div>
+    <div class="ts-item"><h4>Häufiger Fehler: KI klassifiziert Adjektive als Passiv</h4><p>„Das Ergebnis ist interessant" → kein Passiv, Adjektivprädikat!</p><div class="ts-fix">Prompt ergänzen: „'sein' + Adjektiv (interessant, wichtig, möglich) ist KEIN Passiv – nur 'sein + Partizip II' mit Zustandsbedeutung zählt."</div></div>
+    <div class="ts-item"><h4>Häufiger Fehler: Infinitivpassiv wird nicht erkannt</h4><p>Konstruktionen wie „ist zu beachten" oder „bleibt zu klären" werden häufig übersehen.</p><div class="ts-fix">Explizit im Prompt: „Suche auch nach 'sein + zu + Infinitiv'-Strukturen wie 'ist zu beachten', 'bleibt zu klären', 'ist zu erwarten'."</div></div>`
+},
+
+/* ─── NOMINALSTIL-DETEKTOR ─────────────────────── */
+nominal: {
+  name:'Nominalstil-Detektor', icon:'📝', level:'e',
+  badge:'⭐ Einstieg', badgeBg:'#1D8348',
+  sub:'Erkennt und bewertet Nominalisierungen und Funktionsverbgefüge – zentrale Merkmale des Amtsdeutschs',
+  plan:`
+    <h3 class="sec-h3">📄 Planung</h3>
+    <div class="table-wrap"><table class="plan-table">
+      <tr><th>Was?</th><td>Erkennung von Substantivierungen aus Verben und Adjektiven sowie Funktionsverbgefügen. Berechnung eines Nominalstil-Index.</td></tr>
+      <tr><th>Warum?</th><td>Nominalstil ist ein messbares Merkmal bürokratischer und wissenschaftlicher Texte und eines der wichtigsten Konzepte im Hamburger Verständlichkeitsmodell (HVM).</td></tr>
+      <tr><th>Für wen?</th><td>Sprachberater:innen, Redakteur:innen, DaF-Lehrkräfte, Verwaltungsangestellte, Studierende der Linguistik</td></tr>
+      <tr><th>Idealer Testtext</th><td>Amtliche Schreiben, EU-Verordnungen, Koalitionsverträge, Versicherungsbedingungen, Wissenschaftsabstracts</td></tr>
+    </table></div>
+    <h3 class="sec-h3" style="margin-top:18px">🔬 Linguistischer Hintergrund</h3>
+    <ul class="list">
+      <li><strong>Nominalisierungen</strong>: Substantive, die von Verben oder Adjektiven abgeleitet sind<br>Suffixe: <em>-ung, -heit, -keit, -ion, -ität, -tum, -nis, -schaft</em></li>
+      <li><strong>Beispiele</strong>: „die Durchführung" ← durchführen | „die Verbesserung" ← verbessern</li>
+      <li><strong>Funktionsverbgefüge (FVG)</strong>: Präposition + Nomen + Funktionsverb<br>z.B. „zur Durchführung bringen" = durchführen | „in Betracht ziehen" = bedenken</li>
+      <li><strong>HVM-Dimension</strong>: Nominalstil senkt die Dimension „Einfachheit" im Hamburger Verständlichkeitsmodell</li>
+    </ul>`,
+  prompt:`
+    <h3 class="sec-h3">🔧 System Prompt</h3>
+    <div class="prompt-wrap">
+      <div class="prompt-label-bar"><span>System Prompt · Nominalstil-Detektor</span></div>
+      <div class="prompt-block">Du bist ein Stilistik-Experte für deutschsprachige Texte mit Schwerpunkt auf Nominalstil, Verständlichkeit und dem Hamburger Verständlichkeitsmodell (HVM).
+
+Analysiere den folgenden Text Schritt für Schritt:
+
+Schritt 1 – Nominalisierungen identifizieren:
+Erkenne alle Substantivierungen von Verben oder Adjektiven.
+Typische Wortbildungssuffixe: -ung, -heit, -keit, -ion, -ität, -tum, -nis
+Beispiele: „Durchführung" (← durchführen), „Verbesserung" (← verbessern)
+ACHTUNG: Eigennamen, Personenbezeichnungen und allgemeine Substantive (Haus, Mensch) sind KEINE Nominalisierungen.
+
+Schritt 2 – Funktionsverbgefüge (FVG) erkennen:
+Muster: [Präposition] + Nomen + Funktionsverb (bringen, kommen, stehen, nehmen, setzen)
+Beispiele: „zur Durchführung bringen", „in Betracht ziehen", „zum Ausdruck kommen"
+
+Schritt 3 – Nominalstil-Index berechnen:
+Formel: Anzahl Nominalisierungen / Gesamtwortzahl × 100 = Index (%)
+Bewertung: 0–3 % = niedrig | 3–7 % = mittel | 7–12 % = hoch | über 12 % = Amtsdeutsch-Niveau
+
+Ausgabe:
+1. Tabelle: Nominalform | Wortbildungstyp | Verbalstil-Alternative
+2. Index mit Einordnung und Kurzbewertung
+3. Zwei konkrete Umformulierungsvorschläge für die stärksten Nominalisierungen
+
+Antworte vollständig auf Deutsch.</div>
+    </div>
+    <button class="copy-btn" data-copy="Du bist ein Stilistik-Experte für Nominalstil und HVM.&#10;&#10;Analysiere:&#10;1. Nominalisierungen (Suffixe: -ung, -heit, -keit, -ion etc.)&#10;2. Funktionsverbgefüge&#10;3. Nominalstil-Index (0–3% niedrig, 3–7% mittel, 7–12% hoch, 12%+ Amtsdeutsch)&#10;&#10;Ausgabe: Tabelle + Index + 2 Umformulierungsvorschläge&#10;Auf Deutsch." onclick="copyBtn(this)">📋 Prompt kopieren</button>`,
+  output:`
+    <h3 class="sec-h3">📊 Beispiel-Output</h3>
+    <div class="output-box ob-ok">
+      <div class="ob-label">✅ Guter Output (Amtstext)</div>
+      <div class="table-wrap"><table class="data-table" style="margin-top:8px">
+        <thead><tr><th>Nominalform</th><th>Typ</th><th>Verbalstil-Alternative</th></tr></thead>
+        <tbody>
+          <tr><td><span class="hl-ok">„die Durchführung"</span></td><td>Nominalisierung (-ung)</td><td>„durchführen"</td></tr>
+          <tr><td><span class="hl-ok">„zur Anwendung kommen"</span></td><td>Funktionsverbgefüge</td><td>„angewendet werden"</td></tr>
+          <tr><td><span class="hl-ok">„die Möglichkeit der Nutzung"</span></td><td>Nominalisierung (-keit/-ung)</td><td>„genutzt werden können"</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:10px;font-size:.86rem;color:#4B5563"><strong>Index: 9,2 % → Hoch (Amtsdeutsch-Niveau)</strong> · Der Text ist durch starken Nominalstil geprägt, der die Verständlichkeit erheblich erschwert.</p>
+    </div>`,
+  tipps:`
+    <div class="hint tip"><span class="hint-icon">💡</span><div><strong>Tipp:</strong> Bitten Sie die KI in einem zweiten Schritt, den gesamten Text in einen verbalstilisierten Alternativtext umzuschreiben. Vergleichen Sie beide Versionen hinsichtlich Lesbarkeit und Informationsgehalt.</div></div>
+    <div class="ts-item"><h4>KI zählt normale Substantive als Nominalisierungen</h4><p>z.B. „Haus", „Mensch", „Berlin" sind keine Nominalisierungen.</p><div class="ts-fix">Präzisieren: „Nominalisierungen sind ausschließlich von Verben oder Adjektiven abgeleitete Substantive. 'Haus', 'Kind', 'Berlin' sind KEINE Nominalisierungen."</div></div>
+    <div class="ts-item"><h4>KI übersieht Komposita mit Nominalisierungsbestandteil</h4><p>z.B. „Durchführungsbestimmung" enthält eine Nominalisierung.</p><div class="ts-fix">Ergänzen: „Prüfe auch Komposita, die Nominalisierungen enthalten (z.B. 'Durchführungsbestimmung', 'Verbesserungsvorschlag')."</div></div>`
+},
+
+/* ─── SATZLÄNGEN-ANALYZER ──────────────────────── */
+satz: {
+  name:'Satzlängen-Analyzer', icon:'📏', level:'e',
+  badge:'⭐ Einstieg', badgeBg:'#1D8348',
+  sub:'Bewertet Satzlängen und Lesbarkeit nach dem Hamburger Verständlichkeitsmodell (HVM) und der Flesch-Formel',
+  plan:`
+    <h3 class="sec-h3">📄 Planung</h3>
+    <div class="table-wrap"><table class="plan-table">
+      <tr><th>Was?</th><td>Analyse der Satzlängenverteilung, Identifikation von Bandwurmsätzen und Näherungswert für Lesbarkeit nach Flesch (adaptiert für Deutsch).</td></tr>
+      <tr><th>Warum?</th><td>Die durchschnittliche Satzlänge ist der stärkste Einzelprediktor für Lesbarkeit. Das HVM (Langer et al. 1974) macht Satzlänge zur Kerndimension der Dimension „Einfachheit".</td></tr>
+      <tr><th>Idealer Testtext</th><td>Vergleich dreier Textsorten: Kinderbuch / Zeitungsartikel / Wissenschaftstext</td></tr>
+    </table></div>
+    <h3 class="sec-h3" style="margin-top:18px">🔬 Linguistischer Hintergrund</h3>
+    <ul class="list">
+      <li><strong>Leichte Sprache</strong>: ≤ 12 Wörter/Satz (A1/A2-Niveau)</li>
+      <li><strong>Alltagssprache</strong>: 13–20 Wörter/Satz (B1/B2-Niveau)</li>
+      <li><strong>Wissenschaftssprache</strong>: 21–29 Wörter/Satz (C1-Niveau)</li>
+      <li><strong>Bandwurmsatz</strong>: ≥ 30 Wörter/Satz (problematisch für Lesbarkeit)</li>
+    </ul>`,
+  prompt:`
+    <h3 class="sec-h3">🔧 System Prompt</h3>
+    <div class="prompt-wrap">
+      <div class="prompt-label-bar"><span>System Prompt · Satzlängen-Analyzer</span></div>
+      <div class="prompt-block">Du bist ein Lesbarkeits- und Verständlichkeitsexperte für deutschsprachige Texte. Du kennst das Hamburger Verständlichkeitsmodell (HVM, Langer et al. 1974) und die Flesch-Lesbarkeitsformel.
+
+Analysiere den folgenden Text auf Satzlänge und Lesbarkeit:
+
+Schritt 1 – Sätze segmentieren und zählen:
+Trenne an Punkt, Ausrufe- und Fragezeichen (nicht bei Abkürzungen wie „z.B.", „Dr.", „ca.").
+Nummeriere jeden Satz.
+
+Schritt 2 – Wörter pro Satz zählen:
+Zähle alle Wortformen (inkl. Artikel, Präpositionen, Konjunktionen).
+
+Schritt 3 – Klassifikation:
+≤ 12 Wörter → kurz (Leichte Sprache)
+13–20 Wörter → mittel (Alltagssprache)
+21–29 Wörter → lang (Wissenschaftssprache)
+≥ 30 Wörter → Bandwurmsatz ⚠️
+
+Ausgabeformat:
+– Tabelle: Satz-Nr. | Wortanzahl | Bewertung | Erster Teilsatz (max. 10 Wörter als Anker)
+– Statistik: Durchschnitt, Minimum, Maximum, Anzahl Bandwurmsätze
+– Einordnung und Lesbarkeitsempfehlung
+– Für die 2 längsten Sätze: konkreter Vorschlag zur Aufteilung in kürzere Einheiten
+
+Antworte vollständig auf Deutsch.</div>
+    </div>
+    <button class="copy-btn" data-copy="Du bist ein Lesbarkeitsexperte (HVM, Flesch).&#10;&#10;Analysiere Satzlängen:&#10;– Segmentiere Sätze, zähle Wörter&#10;– Klassifiziere: kurz (≤12), mittel (13–20), lang (21–29), Bandwurm (≥30)&#10;&#10;Ausgabe:&#10;– Tabelle: Nr. | Wörter | Bewertung | Anker&#10;– Statistik (Ø, Min, Max, Bandwurmsätze)&#10;– 2 Umformulierungsvorschläge&#10;Auf Deutsch." onclick="copyBtn(this)">📋 Prompt kopieren</button>`,
+  output:`
+    <h3 class="sec-h3">📊 Beispiel-Output</h3>
+    <div class="output-box ob-ok">
+      <div class="ob-label">✅ Guter Output</div>
+      <div class="table-wrap"><table class="data-table" style="margin-top:8px">
+        <thead><tr><th>Satz-Nr.</th><th>Wörter</th><th>Bewertung</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>14</td><td>✅ Mittel (Alltagssprache)</td></tr>
+          <tr><td>3</td><td><span class="hl-bad">38</span></td><td>⚠️ Bandwurmsatz</td></tr>
+          <tr><td>5</td><td>9</td><td>✅ Kurz (Leichte Sprache)</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:8px;font-size:.86rem;color:#4B5563"><strong>Ø 23,4 Wörter → Wissenschaftssprache · 2 Bandwurmsätze (25 %) · Empfehlung: Satz 3 aufteilen.</strong></p>
+    </div>`,
+  tipps:`
+    <div class="hint tip"><span class="hint-icon">💡</span><div><strong>Vergleichsexperiment:</strong> Analysieren Sie denselben Sachverhalt in drei Textsorten: Kinderbucherklärung, Zeitungsartikel, Wissenschaftstext. Die Unterschiede in Satzlänge sind dramatisch und sehr anschaulich.</div></div>
+    <div class="ts-item"><h4>KI segmentiert Aufzählungen falsch</h4><p>Punkte in Aufzählungslisten werden manchmal als separate „Sätze" oder als ein Satz gerechnet.</p><div class="ts-fix">Ergänzen: „Jeder Aufzählungspunkt wird als eigenständiger Satz gezählt. Punkte innerhalb von Aufzählungen werden ebenfalls als Satztrenner gewertet."</div></div>
+    <div class="ts-item"><h4>KI zählt bei Abkürzungen falsch</h4><p>„z.B.", „Dr.", „ca." werden als Satzende interpretiert.</p><div class="ts-fix">Präzisieren: „Gängige deutsche Abkürzungen (z.B., Dr., Prof., ca., bzw., d.h., u.a., etc.) werden NICHT als Satzende gewertet."</div></div>`
+},
+
+/* ─── FACHWORT-EXTRAKTOR ───────────────────────── */
+fachwort: {
+  name:'Fachwort-Extraktor', icon:'🔑', level:'e',
+  badge:'⭐ Einstieg', badgeBg:'#1D8348',
+  sub:'Extrahiert und erklärt domänenspezifische Fachbegriffe – Grundlage der Terminologiearbeit',
+  plan:`
+    <h3 class="sec-h3">📄 Planung</h3>
+    <div class="table-wrap"><table class="plan-table">
+      <tr><th>Was?</th><td>Automatische Extraktion von Fachtermini aus einem Fachtext, Klassifikation nach Terminustyp und Erklärung für Nicht-Expert:innen.</td></tr>
+      <tr><th>Warum?</th><td>Terminologie-Extraktion ist eine der wichtigsten Anwendungen von KI in der Sprachindustrie (Übersetzung, Lokalisierung, Wissensmanagement).</td></tr>
+      <tr><th>Für wen?</th><td>Übersetzer:innen, Fachjournalist:innen, Wissensmanager:innen, DaF-Lernende mit Fachsprachenbedarf</td></tr>
+      <tr><th>Wählen Sie Fachgebiet</th><td>Verwenden Sie einen Text aus einem Ihnen bekannten Fachgebiet – so können Sie Halluzinationen leichter erkennen</td></tr>
+    </table></div>
+    <h3 class="sec-h3" style="margin-top:18px">🔬 Linguistischer Hintergrund</h3>
+    <ul class="list">
+      <li><strong>Eigentlicher Terminus</strong>: nur im Fachgebiet mit dieser Bedeutung verwendbar (z.B. „Morphem", „Hypothermie")</li>
+      <li><strong>Halbterminus</strong>: in Fach- und Gemeinsprache, mit unterschiedlicher Bedeutung (z.B. „Körper" in Physik vs. Alltag)</li>
+      <li><strong>Terminologische Lücke</strong>: Konzept existiert, ein einheitlicher Terminus fehlt noch</li>
+    </ul>`,
+  prompt:`
+    <h3 class="sec-h3">🔧 System Prompt</h3>
+    <div class="prompt-wrap">
+      <div class="prompt-label-bar"><span>System Prompt · Fachwort-Extraktor</span></div>
+      <div class="prompt-block">Du bist ein Terminologie-Experte und Fachsprachenanalyst mit Schwerpunkt auf deutschsprachigen Fachtexten.
+
+Analysiere den folgenden Text und identifiziere alle Fachbegriffe.
+
+Definition Fachbegriff für diese Analyse:
+Ein Fachbegriff (Terminus) ist ein Wort oder eine Wortgruppe, die in einem spezifischen Fachgebiet eine präzise, von der Gemeinsprache abweichende oder nicht vorhandene Bedeutung trägt.
+
+Ausgabeformat (Tabelle):
+| Fachbegriff | Fachgebiet | Terminustyp | Kurzdefinition (1 Satz) | Gemeinsprachliche Entsprechung |
+
+Terminustypen:
+– Eigentlicher Terminus: ausschließlich fachsprachlich
+– Halbterminus: fach- und gemeinsprachlich mit Bedeutungsunterschied
+– Fachsynonym: alternativer Fachterminus für denselben Begriff
+
+Zusatzaufgabe:
+Ordne die gefundenen Termini nach Fachgebiet und Häufigkeit.
+Maximal 12 Einträge, nach Fachlichkeit sortiert.
+Antworte vollständig auf Deutsch.</div>
+    </div>
+    <button class="copy-btn" data-copy="Du bist ein Terminologie-Experte für deutschsprachige Fachtexte.&#10;&#10;Identifiziere alle Fachbegriffe:&#10;– Eigentliche Termini&#10;– Halbtermini&#10;– Fachsynonyme&#10;&#10;Ausgabe (Tabelle): Fachbegriff | Fachgebiet | Terminustyp | Definition | Gemeinsprachliche Entsprechung&#10;Max. 12 Einträge. Auf Deutsch." onclick="copyBtn(this)">📋 Prompt kopieren</button>`,
+  output:`
+    <h3 class="sec-h3">📊 Beispiel-Output</h3>
+    <div class="output-box ob-ok">
+      <div class="ob-label">✅ Guter Output (Medizintext)</div>
+      <div class="table-wrap"><table class="data-table" style="margin-top:8px">
+        <thead><tr><th>Fachbegriff</th><th>Fachgebiet</th><th>Typ</th><th>Kurzdefinition</th><th>Gemeinsprache</th></tr></thead>
+        <tbody>
+          <tr><td>Anamnese</td><td>Medizin</td><td>Eigentl. Terminus</td><td>Erhebung der Krankengeschichte im Patientengespräch</td><td>Vorgeschichte</td></tr>
+          <tr><td>Metabolismus</td><td>Biochemie</td><td>Halbterminus</td><td>Gesamtheit aller biochemischen Stoffwechselvorgänge</td><td>Stoffwechsel</td></tr>
+        </tbody>
+      </table></div>
+    </div>`,
+  tipps:`
+    <div class="hint tip"><span class="hint-icon">💡</span><div><strong>Empfehlung:</strong> Wählen Sie ein Fachgebiet, das Sie kennen. Nur so können Sie überprüfen, ob die KI-Definitionen korrekt sind. Halluzinierte Definitionen sind bei Fachbegriffen besonders häufig!</div></div>
+    <div class="ts-item"><h4>KI erfindet Definitionen</h4><p>Die KI gibt eine plausibel klingende, aber falsche Kurzdefinition an.</p><div class="ts-fix">Präzisieren: „Gib ausschließlich Definitionen an, die du mit hoher Sicherheit kennst. Bei Unsicherheit: 'Definition unklar – bitte extern prüfen'."</div></div>`
+},
+
+/* ─── GER-LEVEL ANALYZER ───────────────────────── */
+ger: {
+  name:'GER-Level Analyzer', icon:'🎓', level:'e',
+  badge:'⭐ Einstieg', badgeBg:'#1D8348',
+  sub:'Stuft deutschsprachige Texte nach dem Gemeinsamen Europäischen Referenzrahmen ein (A1–C2) mit linguistischer Begründung',
+  plan:`
+    <h3 class="sec-h3">📄 Planung</h3>
+    <div class="table-wrap"><table class="plan-table">
+      <tr><th>Was?</th><td>Automatische GER-Einstufung eines deutschsprachigen Textes mit Begründung anhand von Wortschatz, Grammatik und Textkohäsion.</td></tr>
+      <tr><th>Warum?</th><td>GER-Einstufung ist für DaF-Materialentwicklung, Lehrbuchauswahl und Sprachprüfungsvorbereitung zentral. KI kann als erster Filterassistent dienen.</td></tr>
+      <tr><th>Für wen?</th><td>DaF-Lehrkräfte, Lehrmaterial-Entwickler:innen, Lernende bei der Textauswahl</td></tr>
+      <tr><th>Validierungstipp</th><td>Testen Sie mit Texten aus offiziellen GER-Quellen (Goethe-Institut, telc, ÖSD) und vergleichen Sie die KI-Einstufung mit der Expertenentscheidung</td></tr>
+    </table></div>
+    <h3 class="sec-h3" style="margin-top:18px">🔬 Linguistischer Hintergrund</h3>
+    <ul class="list">
+      <li><strong>A1/A2</strong>: Grundwortschatz, einfache Hauptsätze, Präsens/Präteritum</li>
+      <li><strong>B1/B2</strong>: Erweiterter Wortschatz, Nebensätze, Konjunktiv II, Passiv</li>
+      <li><strong>C1/C2</strong>: Akademischer Wortschatz, komplexe Hypotaxe, Partizipialkonstruktionen, rhetorische Mittel</li>
+    </ul>`,
+  prompt:`
+    <h3 class="sec-h3">🔧 System Prompt</h3>
+    <div class="prompt-wrap">
+      <div class="prompt-label-bar"><span>System Prompt · GER-Level Analyzer</span></div>
+      <div class="prompt-block">Du bist ein DaF-Experte und Sprachstandsdiagnostiker mit fundierter Kenntnis des Gemeinsamen Europäischen Referenzrahmens (GER / CEFR) und der Kannbeschreibungen für Deutsch.
+
+Analysiere den folgenden deutschsprachigen Text und stufe ihn nach GER-Niveau ein.
+
+Analysiere diese Kriterien mit je 1–2 konkreten Textbelegen:
+1. Wortschatz: Grundwortschatz (A) vs. Erweiterungswortschatz (B) vs. Akademischer Wortschatz (C)
+2. Grammatik: Satzkomplexität, Nebensatztypen (welche?), Tempus- und Modusgebrauch
+3. Textkohäsion: Wie werden Sätze verknüpft? (und/aber vs. obgleich/wenngleich/dessen ungeachtet)
+4. Diskurskompetenz: Informationsdichte, Argumentationsstruktur, Textsortenmerkmale
+
+Ausgabe:
+– GER-Gesamtniveau: [A1 / A2 / B1 / B2 / C1 / C2]
+– Tabelle: Kriterium | GER-Indikator | Textbeleg
+– Einschränkungen der Einstufung (wo ist sie unsicher?)
+– Didaktischer Hinweis: Für welchen Lernkontext eignet sich der Text?
+
+Antworte vollständig auf Deutsch.</div>
+    </div>
+    <button class="copy-btn" data-copy="Du bist ein DaF-Experte für GER-Einstufung (A1–C2).&#10;&#10;Analysiere:&#10;1. Wortschatz (Grundwortschatz / Erweiterungs- / Akademisch)&#10;2. Grammatik (Satzkomplexität, Nebensatztypen, Tempus/Modus)&#10;3. Textkohäsion&#10;4. Diskurskompetenz&#10;&#10;Ausgabe: GER-Niveau + Tabelle mit Belegen + Einschränkungen + didakt. Hinweis&#10;Auf Deutsch." onclick="copyBtn(this)">📋 Prompt kopieren</button>`,
+  output:`
+    <h3 class="sec-h3">📊 Beispiel-Output</h3>
+    <div class="output-box ob-ok">
+      <div class="ob-label">✅ Guter Output</div>
+      <p style="font-size:.86rem;color:#4B5563"><strong>Gesamteinstufung: B2</strong></p>
+      <div class="table-wrap"><table class="data-table" style="margin-top:8px">
+        <thead><tr><th>Kriterium</th><th>GER-Indikator</th><th>Textbeleg</th></tr></thead>
+        <tbody>
+          <tr><td>Wortschatz</td><td>Erweiterungswortschatz B2</td><td><span class="hl-ok">„gewährleisten"</span>, <span class="hl-ok">„Beeinträchtigung"</span></td></tr>
+          <tr><td>Grammatik</td><td>Konjunktiv II, Relativsätze</td><td><span class="hl-ok">„könnte dargelegt werden"</span></td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:8px;font-size:.86rem;color:#4B5563"><strong>Unsicherheit:</strong> 2–3 C1-Marker vorhanden; Text könnte B2/C1-Übergang sein.</p>
+    </div>`,
+  tipps:`
+    <div class="hint tip"><span class="hint-icon">💡</span><div><strong>Validierungsexperiment:</strong> Testen Sie Texte aus offiziell eingestuften Lehrwerken (z.B. Aspekte, Netzwerk, studio d) und prüfen Sie, wie genau die KI das Niveau trifft.</div></div>
+    <div class="ts-item"><h4>KI stuft fast alles als B2/C1 ein (Bias)</h4><p>Die KI scheint B2/C1 als „sichere Mitte" zu bevorzugen.</p><div class="ts-fix">Iterations-Prompt: „Nenne zuerst 3 Merkmale, die eindeutig auf A1-Niveau hinweisen, und 3 Merkmale, die auf C2 hinweisen. Stufe dann das Gesamtniveau auf Basis dieser Gegenüberstellung ein."</div></div>`
+},
+
+/* ─── CLICKBAIT-DETECTOR ───────────────────────── */
+clickbait: {
+  name:'Clickbait-Detector', icon:'🖱️', level:'f',
+  badge:'⚡ Fortgeschritten', badgeBg:'#6C3483',
+  sub:'Erkennt und bewertet Clickbait-Strategien in Schlagzeilen und Online-Texten nach medienlinguistischen Kategorien',
+  plan:`
+    <h3 class="sec-h3">📄 Planung</h3>
+    <div class="table-wrap"><table class="plan-table">
+      <tr><th>Was?</th><td>Analyse von 10–20 Online-Schlagzeilen auf Clickbait-Merkmale nach medienlinguistischen Kategorien. Berechnung eines Clickbait-Scores.</td></tr>
+      <tr><th>Warum?</th><td>Clickbait ist ein gut erforschtes medienlinguistisches Phänomen (Blom &amp; Hansen 2015). Dieses Tool operationalisiert bestehende Theorien in einer anwendbaren App.</td></tr>
+      <tr><th>Idealer Testtext</th><td>10–20 Schlagzeilen aus verschiedenen Medien (Bild, Focus Online, taz, FAZ) zum direkten Vergleich</td></tr>
+    </table></div>
+    <h3 class="sec-h3" style="margin-top:18px">🔬 Linguistischer Hintergrund</h3>
+    <ul class="list">
+      <li><strong>Neugier-Lücke</strong> (Loewenstein 1994): Schlagzeile weckt Wissensbegehren ohne Befriedigung</li>
+      <li><strong>Forward Referencing</strong>: pronominale Verweise auf nicht genannte Entitäten</li>
+      <li><strong>Sensationalismus</strong>: übertriebene Emotionalisierung, Superlative</li>
+      <li><strong>Vage Referenz</strong>: „Ein Experte", „eine Studie" ohne Quelle</li>
+    </ul>`,
+  prompt:`
+    <h3 class="sec-h3">🔧 System Prompt</h3>
+    <div class="prompt-wrap">
+      <div class="prompt-label-bar"><span>System Prompt · Clickbait-Detector</span></div>
+      <div class="prompt-block">Du bist ein Medienlinguistik-Experte mit Spezialisierung auf digitale Kommunikation und Clickbait-Forschung (Blom &amp; Hansen 2015, Loewenstein 1994).
+
+Analysiere die folgenden deutschen Schlagzeilen auf Clickbait-Merkmale.
+
+Erkenne diese Strategien (mit Kurzdefinition):
+1. Neugier-Lücke: Schlagzeile weckt Neugier, gibt Antwort nicht preis (z.B. „Das werden Sie nicht glauben…")
+2. Forward Referencing: pronominaler Verweis ohne Antezedens (z.B. „Das ändert jetzt alles")
+3. Emotionaler Trigger: gezielt Angst, Empörung oder Begeisterung einsetzen
+4. Sensationalismus: unbelegte Superlative, Dramatisierung ohne Grundlage
+5. Falsche Dringlichkeit: zeitliche Druckformeln ohne sachliche Notwendigkeit
+6. Vage Referenz: unbenannte Experten, unbenannte Studien, Anonymisierung
+
+Ausgabeformat (Tabelle):
+| Schlagzeile | Clickbait? (Ja/Teils/Nein) | Strategien | Score (0–10) | Begründung (1 Satz) |
+
+Nach der Tabelle:
+– Durchschnitts-Score
+– Welche Strategie kommt am häufigsten vor?
+– 1 Schlagzeile als Positivbeispiel (gute journalistische Praxis)
+
+Antworte vollständig auf Deutsch. Bewerte sachlich, ohne die Medien inhaltlich zu kommentieren.</div>
+    </div>
+    <button class="copy-btn" data-copy="Du bist ein Medienlinguistik-Experte für Clickbait-Analyse (Blom &amp; Hansen 2015).&#10;&#10;Analysiere Schlagzeilen auf:&#10;1. Neugier-Lücke&#10;2. Forward Referencing&#10;3. Emotionaler Trigger&#10;4. Sensationalismus&#10;5. Falsche Dringlichkeit&#10;6. Vage Referenz&#10;&#10;Ausgabe: Tabelle + Score (0–10) + Durchschnitt + häufigste Strategie&#10;Sachlich, auf Deutsch." onclick="copyBtn(this)">📋 Prompt kopieren</button>`,
+  output:`
+    <h3 class="sec-h3">📊 Beispiel-Output</h3>
+    <div class="output-box ob-ok">
+      <div class="ob-label">✅ Guter Output</div>
+      <div class="table-wrap"><table class="data-table" style="margin-top:8px">
+        <thead><tr><th>Schlagzeile</th><th>Clickbait?</th><th>Score</th><th>Hauptstrategie</th></tr></thead>
+        <tbody>
+          <tr><td>„Das macht diese Mutter jeden Abend – und es verändert alles"</td><td>Ja</td><td>8/10</td><td>Neugier-Lücke + Forward Referencing</td></tr>
+          <tr><td>„Bundesrat beschließt neue Datenschutzregeln für KI-Systeme"</td><td>Nein</td><td>1/10</td><td>Sachliche Berichterstattung</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:8px;font-size:.86rem;color:#4B5563"><strong>Durchschnitt: 4,3/10</strong> · Häufigste Strategie: Neugier-Lücke (5 von 8 Schlagzeilen)</p>
+    </div>`,
+  tipps:`
+    <div class="hint tip"><span class="hint-icon">💡</span><div><strong>Tipp:</strong> Nehmen Sie dieselbe Nachricht und vergleichen Sie die Schlagzeilen aus Bild, Spiegel Online und Süddeutsche Zeitung. Die Score-Unterschiede sind oft sehr aufschlussreich.</div></div>
+    <div class="ts-item"><h4>KI klassifiziert zu viel als Clickbait</h4><p>Auch sachliche Formulierungen erhalten hohe Scores.</p><div class="ts-fix">Präzisieren: „Bewerte nur dann als Clickbait, wenn mindestens 2 der 6 Strategien klar und eindeutig erkennbar sind. Eine einzelne Metonymie oder ein Superlativ allein ist kein Clickbait."</div></div>`
+},
+
+/* ─── DAF FEEDBACK AGENT ───────────────────────── */
+daf: {
+  name:'DaF Feedback Agent', icon:'✍️', level:'f',
+  badge:'⚡ Fortgeschritten', badgeBg:'#6C3483',
+  sub:'Gibt konstruktives, didaktisch fundiertes Feedback auf Texte von Deutsch-als-Fremdsprache-Lernenden',
+  plan:`
+    <h3 class="sec-h3">📄 Planung</h3>
+    <div class="table-wrap"><table class="plan-table">
+      <tr><th>Was?</th><td>KI-gestütztes Feedback-Tool für DaF-Lernertexte: Fehleranalyse nach linguistischen Kategorien, konstruktive Verbesserungsvorschläge, didaktische Kommentare.</td></tr>
+      <tr><th>Warum?</th><td>Individuelles Feedback ist im DaF-Unterricht zeitintensiv. KI kann als Vorab-Korrektursystem dienen – ersetzt aber nicht die Lehrkraft.</td></tr>
+      <tr><th>Ziel-GER-Niveau angeben</th><td>Immer das angestrebte GER-Niveau (z.B. B1) im Prompt angeben – Korrekturen sollen dem Niveau angepasst sein</td></tr>
+    </table></div>
+    <div class="hint danger"><span class="hint-icon">🔒</span><div><strong>Datenschutz-Pflicht:</strong> Verwenden Sie ausschließlich anonymisierte Beispieltexte. Keine echten Lernertexte identifizierbarer Personen in KI-Systeme eingeben (DSGVO Art. 9).</div></div>
+    <div class="hint warn"><span class="hint-icon">⚠️</span><div><strong>Wichtiger Hinweis:</strong> Dieses Tool ersetzt die Lehrkraft nicht. Alle KI-Korrekturen müssen von einer Fachperson überprüft werden, bevor sie an Lernende weitergegeben werden.</div></div>`,
+  prompt:`
+    <h3 class="sec-h3">🔧 System Prompt</h3>
+    <div class="prompt-wrap">
+      <div class="prompt-label-bar"><span>System Prompt · DaF Feedback Agent</span></div>
+      <div class="prompt-block">Du bist eine erfahrene DaF-Lehrkraft mit Schwerpunkt auf konstruktiver Fehlerkorrektur und lernförderlichem Feedback.
+
+Analysiere den folgenden Lernertext auf Deutsch.
+Ziel-Niveau: [GER-Niveau hier angeben, z.B. B1]
+
+Schritt 1 – Stärken benennen (mindestens 2 positive Aspekte):
+Was macht der Text GUT? (Struktur, Ausdrucksvermögen, Themenbehandlung)
+
+Schritt 2 – Fehleranalyse (Tabelle):
+| Nr. | Fehler (wörtlich) | Korrekte Form | Fehlertyp | Kurze Erklärung |
+Fehlertypen: Grammatik | Wortstellung | Wortschatz | Orthografie | Pragmatik | Kohärenz
+
+Schritt 3 – Prioritäten setzen:
+Die 3 lernrelevantesten Fehler für das angegebene GER-Niveau – in Reihenfolge ihrer Wichtigkeit.
+
+Schritt 4 – Korrigierte Version:
+Vollständige korrigierte Fassung des Textes ohne Kommentar.
+
+Wichtige Regeln:
+– Ton: konstruktiv, ermutigend, niemals wertend gegenüber dem/der Lernenden
+– Maximal 6 Korrekturen in der Tabelle (nicht überfordern)
+– Fokus auf produktive, transferierbare Lernpunkte
+– Antworte vollständig auf Deutsch</div>
+    </div>
+    <button class="copy-btn" data-copy="Du bist eine erfahrene DaF-Lehrkraft.&#10;&#10;Feedback-Struktur:&#10;1. Stärken (mind. 2)&#10;2. Fehleranalyse-Tabelle: Nr. | Fehler | Korrekte Form | Fehlertyp | Erklärung&#10;3. Top-3-Fehler nach Lernrelevanz&#10;4. Korrigierter Text&#10;&#10;Ton: konstruktiv, ermutigend. Max. 6 Korrekturen. Auf Deutsch." onclick="copyBtn(this)">📋 Prompt kopieren</button>`,
+  output:`
+    <h3 class="sec-h3">📊 Beispiel-Output</h3>
+    <div class="output-box ob-ok">
+      <div class="ob-label">✅ Guter Output</div>
+      <p style="font-size:.86rem;color:#4B5563"><strong>Stärken:</strong> Klare Argumentationsstruktur, guter Einsatz von Konnektoren wie „weil" und „deshalb".</p>
+      <div class="table-wrap"><table class="data-table" style="margin-top:8px">
+        <thead><tr><th>Nr.</th><th>Fehler</th><th>Korrekte Form</th><th>Fehlertyp</th><th>Erklärung</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><span class="hl-bad">„seit drei Jahren lerne"</span></td><td><span class="hl-ok">„lerne seit drei Jahren"</span></td><td>Wortstellung</td><td>Temporalangaben stehen bei Verben mit Zeitdauer im Mittelfeld, typischerweise nach dem konjugierten Verb.</td></tr>
+        </tbody>
+      </table></div>
+    </div>`,
+  tipps:`
+    <div class="hint tip"><span class="hint-icon">💡</span><div><strong>Tipp:</strong> Bauen Sie in Ihren Testtext absichtlich typische Interferenzfehler von Sprecher:innen Ihrer Muttersprache ein – und prüfen Sie, ob die KI sie erkennt.</div></div>
+    <div class="ts-item"><h4>KI ist zu streng und klingt entmutigend</h4><p>Der Feedback-Ton ist zu kritisch für Lernende.</p><div class="ts-fix">Ergänzen: „Beginne jede Korrektur mit einer Anerkennung der Leistung der Lernenden. Formuliere Korrekturen als Lernhinweise, nicht als Fehlerlisten."</div></div>`
+},
+
+/* ─── KOLLOKATIONSFINDER ───────────────────────── */
+kolloka: {
+  name:'Kollokationsfinder', icon:'🔗', level:'f',
+  badge:'⚡ Fortgeschritten', badgeBg:'#6C3483',
+  sub:'Findet und klassifiziert habituelle Wortverbindungen (Kollokationen) – Kernthema der Korpuslinguistik',
+  plan:`
+    <h3 class="sec-h3">📄 Planung</h3>
+    <div class="table-wrap"><table class="plan-table">
+      <tr><th>Was?</th><td>Extraktion und Klassifikation von Kollokationen (nach Hausmann 1985) aus Fach- und Alltagstexten. Unterscheidung von Basis und Kollokator.</td></tr>
+      <tr><th>Warum?</th><td>Kollokationen sind für den Wortschatzerwerb zentral (DaF) und gleichzeitig Kerngegenstand der Korpuslinguistik (traditionell: AntConc, Sketch Engine). Dieses Tool ergänzt oder ersetzt erste manuelle Suchen.</td></tr>
+      <tr><th>Idealer Testtext</th><td>Wirtschaftstext, Nachrichtenartikel, Wissenschaftstext – mind. 300 Wörter zu einem klar definierten Thema</td></tr>
+    </table></div>
+    <h3 class="sec-h3" style="margin-top:18px">🔬 Linguistischer Hintergrund</h3>
+    <ul class="list">
+      <li><strong>Kollokation</strong> (Hausmann 1985): „statistisch überzufällige, habituelle Wortverbindung"</li>
+      <li><strong>Basis</strong>: semantisch autonomes Wort (z.B. „Entscheidung")</li>
+      <li><strong>Kollokator</strong>: kontextuell gebundenes Wort (z.B. „treffen" in „eine Entscheidung treffen")</li>
+      <li><strong>Kollokationstypen</strong>: Verb+Nomen, Adjektiv+Nomen, Nomen+Nomen, Adverb+Adjektiv</li>
+    </ul>`,
+  prompt:`
+    <h3 class="sec-h3">🔧 System Prompt</h3>
+    <div class="prompt-wrap">
+      <div class="prompt-label-bar"><span>System Prompt · Kollokationsfinder</span></div>
+      <div class="prompt-block">Du bist ein Korpuslinguistik-Experte mit Schwerpunkt auf Kollokationsanalyse im Deutschen (Hausmann 1985, Sinclair 1991).
+
+Analysiere den folgenden Text auf typische Kollokationen.
+
+Definition: Eine Kollokation ist eine habituelle, statistisch überzufällige Wortverbindung, die für Muttersprachler:innen „natürlich" klingt. Sie besteht aus Basis (semantisch autonom) und Kollokator (kontextuell gebunden).
+
+Suche nach diesen Kollokationstypen:
+1. Verb + Nomen: Verb ist der Kollokator, Nomen die Basis
+   Beispiel: „eine Entscheidung treffen" (Basis: Entscheidung, Kollokator: treffen)
+2. Adjektiv + Nomen: Adjektiv ist der Kollokator
+   Beispiel: „scharfe Kritik" (Basis: Kritik, Kollokator: scharf)
+3. Nomen + Nomen (Genitiv oder Kompositum):
+   Beispiel: „Quelle der Inspiration", „Forschungsergebnis"
+4. Adverb + Adjektiv: Adverb ist der Kollokator
+   Beispiel: „bitterlich weinen", „heillos überfordert"
+
+Ausgabeformat (Tabelle):
+| Kollokation | Typ | Basis | Kollokator | Typisch für (Fachgebiet/Register) |
+
+Zusatz: Welche Kollokationen sind besonders fach- oder registergebunden?
+Maximal 12 Einträge.
+Antworte vollständig auf Deutsch.</div>
+    </div>
+    <button class="copy-btn" data-copy="Du bist ein Korpuslinguistik-Experte für Kollokationsanalyse (Hausmann 1985).&#10;&#10;Suche: Verb+Nomen, Adjektiv+Nomen, Nomen+Nomen, Adverb+Adjektiv&#10;&#10;Ausgabe (Tabelle): Kollokation | Typ | Basis | Kollokator | Register&#10;Max. 12 Einträge. Auf Deutsch." onclick="copyBtn(this)">📋 Prompt kopieren</button>`,
+  output:`
+    <h3 class="sec-h3">📊 Beispiel-Output</h3>
+    <div class="output-box ob-ok">
+      <div class="ob-label">✅ Guter Output (Wirtschaftstext)</div>
+      <div class="table-wrap"><table class="data-table" style="margin-top:8px">
+        <thead><tr><th>Kollokation</th><th>Typ</th><th>Basis</th><th>Kollokator</th></tr></thead>
+        <tbody>
+          <tr><td><span class="hl-ok">„Maßnahmen ergreifen"</span></td><td>Verb+Nomen</td><td>Maßnahmen</td><td>ergreifen</td></tr>
+          <tr><td><span class="hl-ok">„hohe Nachfrage"</span></td><td>Adj+Nomen</td><td>Nachfrage</td><td>hoch</td></tr>
+        </tbody>
+      </table></div>
+    </div>`,
+  tipps:`
+    <div class="hint tip"><span class="hint-icon">💡</span><div><strong>Vergleich mit AntConc:</strong> Suchen Sie dieselben Kollokationsbasen (z.B. „Maßnahme") mit der Collocates-Funktion in AntConc und vergleichen Sie die Treffer mit dem KI-Ergebnis. Wer findet mehr?</div></div>
+    <div class="ts-item"><h4>KI verwechselt Kollokationen mit freien Wortverbindungen</h4><p>„Das Buch liegt auf dem Tisch" ist keine Kollokation.</p><div class="ts-fix">Präzisieren: „Eine Kollokation ist nur dann vorhanden, wenn die Kombination sprachlich konventionalisiert ist und nicht durch ein synonymes Wort ersetzt werden kann, ohne unnatürlich zu klingen (z.B. *'Entscheidung fällen' statt 'treffen' klingt ungewöhnlich)."</div></div>`
+},
+
+/* ─── GENDERING-ANALYSE ────────────────────────── */
+gendering: {
+  name:'Gendering-Analyse', icon:'♾️', level:'f',
+  badge:'⚡ Fortgeschritten', badgeBg:'#6C3483',
+  sub:'Analysiert geschlechtergerechte Sprache in deutschen Texten nach Strategie, Häufigkeit und Konsistenz',
+  plan:`
+    <h3 class="sec-h3">📄 Planung</h3>
+    <div class="table-wrap"><table class="plan-table">
+      <tr><th>Was?</th><td>Systematische Analyse der verwendeten Genderstrategien bei Personenbezeichnungen in einem Text nach linguistischen Kategorien.</td></tr>
+      <tr><th>Warum?</th><td>Geschlechtergerechte Sprache ist ein soziolinguistisch hochrelevantes Thema mit klar beschreibbaren morphologischen Merkmalen. Die Analyse ist reproduzierbar und linguistisch präzisierbar.</td></tr>
+      <tr><th>Idealer Testtext</th><td>Stellenausschreibungen, Hochschulsatzungen, Behördentexte, Pressemitteilungen von Unternehmen (erlaubt direkten institutionellen Vergleich)</td></tr>
+    </table></div>
+    <div class="hint info"><span class="hint-icon">ℹ️</span><div>Die Analyse beschreibt und klassifiziert sprachliche Formen – sie bewertet keine sprachpolitischen Entscheidungen. Das Tool ist deskriptiv, nicht normativ.</div></div>`,
+  prompt:`
+    <h3 class="sec-h3">🔧 System Prompt</h3>
+    <div class="prompt-wrap">
+      <div class="prompt-label-bar"><span>System Prompt · Gendering-Analyse</span></div>
+      <div class="prompt-block">Du bist eine Soziolinguistin mit Spezialisierung auf geschlechtergerechte Sprache und Sprachpolitik im deutschen Sprachraum.
+
+Analysiere den folgenden Text ausschließlich auf Genderformen bei Personenbezeichnungen.
+
+Erkenne und klassifiziere diese Genderstrategien:
+1. Generisches Maskulinum: „der Lehrer", „die Wissenschaftler"
+2. Genderstern (*): „Lehrer*innen", „Student*innen"
+3. Gender-Gap (_): „Lehrer_innen", „Bürger_innen"
+4. Binnen-I: „LehrerInnen", „StudentInnen"
+5. Doppelnennung (Paarform): „Lehrerinnen und Lehrer", „Bürgerinnen und Bürger"
+6. Neutrale / inklusive Formulierung: „Lehrperson", „Studierende", „Fachkraft"
+7. Partizipialform: „Lehrende", „Forschende", „Studierende"
+
+Ausgabeformat:
+– Tabelle: Textstelle | Strategie | Häufigkeit im Text
+– Dominante Strategie und ihr prozentualer Anteil
+– Konsistenz-Bewertung: Wird eine einheitliche Strategie durchgehalten?
+– Zwei konkrete Empfehlungen zur Vereinheitlichung (deskriptiv, keine Wertung)
+
+Antworte vollständig auf Deutsch. Bewerte die Strategien nicht politisch.</div>
+    </div>
+    <button class="copy-btn" data-copy="Du bist eine Soziolinguistin für geschlechtergerechte Sprache.&#10;&#10;Klassifiziere Genderstrategien:&#10;1. Gen. Maskulinum 2. Genderstern (*) 3. Gender-Gap (_) 4. Binnen-I 5. Doppelnennung 6. Neutrale Formulierung 7. Partizipialform&#10;&#10;Ausgabe:&#10;– Tabelle: Textstelle | Strategie | Häufigkeit&#10;– Dominante Strategie&#10;– Konsistenz-Bewertung&#10;– 2 Vereinheitlichungsempfehlungen&#10;Deskriptiv, politisch neutral, auf Deutsch." onclick="copyBtn(this)">📋 Prompt kopieren</button>`,
+  output:`
+    <h3 class="sec-h3">📊 Beispiel-Output</h3>
+    <div class="output-box ob-ok">
+      <div class="ob-label">✅ Guter Output (Stellenausschreibung)</div>
+      <p style="font-size:.86rem;color:#4B5563"><strong>Dominante Strategie:</strong> Genderstern (7× / 58 %) · <strong>Inkonsistenz:</strong> 2× generisches Maskulinum<br><strong>Empfehlung:</strong> Genderstern konsequent einführen oder zu Partizipialformen (Lehrende, Studierende) wechseln.</p>
+    </div>`,
+  tipps:`
+    <div class="hint tip"><span class="hint-icon">💡</span><div><strong>Vergleichsexperiment:</strong> Analysieren Sie dieselbe Textsorte (z.B. Stellenausschreibung) von der TU Berlin, einer Bundesbehörde und einem Privatunternehmen. Sprachpolitische Unterschiede werden sofort sichtbar.</div></div>
+    <div class="ts-item"><h4>KI kommentiert die Sprachpolitik anstatt nur zu beschreiben</h4><p>Die Ausgabe enthält Wertungen wie „problematisch" oder „modern".</p><div class="ts-fix">Im Prompt betonen: „Deine Aufgabe ist ausschließlich deskriptiv. Verwende keine wertenden Begriffe. Beschreibe nur, welche Form wie häufig vorkommt."</div></div>`
+},
+
+/* ─── KORPUS-ASSISTENT ─────────────────────────── */
+korpus: {
+  name:'Korpus-Assistent', icon:'🗄️', level:'f',
+  badge:'⚡ Fortgeschritten', badgeBg:'#6C3483',
+  sub:'Unterstützt bei Planung, Aufbereitung und Analyse kleiner Textkorpora – Brücke zwischen AntConc und KI',
+  plan:`
+    <h3 class="sec-h3">📄 Planung</h3>
+    <div class="table-wrap"><table class="plan-table">
+      <tr><th>Was?</th><td>KI-Assistent, der bei allen Phasen der Korpusarbeit hilft: Planung, Textvorbereitung, Frequenzanalyse und Hypothesenformulierung für Mini-Korpora (3–5 Texte).</td></tr>
+      <tr><th>Warum?</th><td>Dieses Tool schlägt eine Brücke zwischen traditioneller Korpuslinguistik (AntConc) und KI-gestützter Analyse und macht die Unterschiede beider Ansätze sichtbar.</td></tr>
+      <tr><th>Idealer Testtext</th><td>3–5 Texte zu einem gemeinsamen Thema (z.B. KI-Berichterstattung in verschiedenen Medien, 2024–2025)</td></tr>
+    </table></div>`,
+  prompt:`
+    <h3 class="sec-h3">🔧 System Prompt</h3>
+    <div class="prompt-wrap">
+      <div class="prompt-label-bar"><span>System Prompt · Korpus-Assistent</span></div>
+      <div class="prompt-block">Du bist ein Korpuslinguistik-Assistent und unterstützt bei der Planung und Durchführung von Mini-Korpusstudien im Deutschen.
+
+Analysiere die folgenden Texte als Mini-Korpus (2–5 Texte, getrennt durch [TEXT 1], [TEXT 2] etc.).
+
+Schritt 1 – Korpus-Überblick:
+– Gesamtwortzahl (geschätzt)
+– Textsorten und Quellen
+– Zeitraum und Themenfeld
+
+Schritt 2 – Frequenzanalyse:
+– Top 20 Inhaltswörter (Nomen, Verben, Adjektive) nach geschätzter Häufigkeit
+– Auffällige Leerstellen: Welche erwartbaren Wörter zu diesem Thema fehlen?
+
+Schritt 3 – Schlüsselwörter identifizieren:
+– Welche Wörter erscheinen in diesem Korpus auffällig häufig im Vergleich zur Allgemeinsprache?
+– Typische Kollokationen und Phrasen
+
+Schritt 4 – Zwei überprüfbare Hypothesen formulieren:
+– Formuliere je eine Hypothese zu Wortschatz und Syntax
+– Hypothesenformat: „H1: [Behauptung]. Methode zur Überprüfung: [mit AntConc / weiteren Texten]."
+
+Methodische Einschränkung: Weise darauf hin, dass KI keine echte statistische Keyness-Berechnung durchführen kann.
+Antworte vollständig auf Deutsch.</div>
+    </div>
+    <button class="copy-btn" data-copy="Du bist ein Korpuslinguistik-Assistent für Mini-Korpora.&#10;&#10;Analysiere 2–5 Texte [TEXT 1], [TEXT 2] etc.:&#10;1. Überblick (Wortzahl, Textsorten, Zeitraum)&#10;2. Top-20-Inhaltswörter + Leerstellen&#10;3. Schlüsselwörter + Kollokationen&#10;4. 2 überprüfbare Hypothesen (Wortschatz + Syntax)&#10;&#10;Methodische Einschränkung erwähnen. Auf Deutsch." onclick="copyBtn(this)">📋 Prompt kopieren</button>`,
+  output:`
+    <h3 class="sec-h3">📊 Beispiel-Output</h3>
+    <div class="output-box ob-ok">
+      <div class="ob-label">✅ Guter Output</div>
+      <p style="font-size:.86rem;color:#4B5563"><strong>Korpus:</strong> 3 Texte, ca. 1.250 Wörter, Nachrichtentexte, Jan–März 2025</p>
+      <p style="font-size:.86rem;color:#4B5563;margin-top:4px"><strong>H1:</strong> Medientexte über KI verwenden häufiger deontische Modalverben als allgemeine Technologietexte. Methode: Vergleichskorpus in AntConc erstellen.</p>
+      <p style="font-size:.86rem;color:#4B5563;margin-top:4px;color:#922B21"><strong>Methodische Einschränkung:</strong> Diese Frequenzschätzungen ersetzen keine statistische Keyness-Berechnung mit einem Referenzkorpus.</p>
+    </div>`,
+  tipps:`
+    <div class="hint tip"><span class="hint-icon">💡</span><div><strong>Kombinierter Workflow:</strong> Verwenden Sie dieses Tool als Planungshilfe, bevor Sie AntConc öffnen. Die KI liefert erste Hypothesen – AntConc liefert die statistisch belastbaren Belege.</div></div>
+    <div class="ts-item"><h4>KI gibt präzise Frequenzzahlen an, die falsch sind</h4><p>Die KI nennt z.B. „'Regulierung' erscheint 12× im Korpus" – das stimmt nicht.</p><div class="ts-fix">Im Prompt ergänzen: „Nenne KEINE präzisen Häufigkeitszahlen. Verwende stattdessen: 'häufig', 'selten', 'auffällig häufig'. Präzise Zählungen können nur mit Korpus-Software (AntConc) durchgeführt werden."</div></div>`
+},
+
+/* ─── DIALEKT-CLASSIFIER ───────────────────────── */
+dialekt: {
+  name:'Dialekt-Classifier', icon:'🗺️', level:'ex',
+  badge:'🚀 Experten', badgeBg:'#C0392B',
+  sub:'Klassifiziert dialektale Merkmale in deutschen Texten auf phonologischer, morphologischer und lexikalischer Ebene',
+  plan:`
+    <h3 class="sec-h3">📄 Planung</h3>
+    <div class="table-wrap"><table class="plan-table">
+      <tr><th>Was?</th><td>Erkennung und Klassifikation dialektaler Merkmale auf drei Beschreibungsebenen mit expliziter Konfidenzangabe.</td></tr>
+      <tr><th>Warum?</th><td>Varietätenlinguistik ist ein Kerngebiet der Germanistik. Dieses Tool eignet sich besonders gut zur Demonstration der Grenzen von KI-Systemen bei Nicht-Standardsprache.</td></tr>
+      <tr><th>⚠️ Wichtiger Hinweis</th><td>KI-Dialekterkennung ist deutlich fehleranfälliger als KI-Standardsprache-Analyse. Die Fehler und Halluzinationen sind bei diesem Tool besonders lehrreich!</td></tr>
+      <tr><th>Idealer Testtext</th><td>Mundartliteratur (Bairisch, Kölsch, Plattdeutsch), Social-Media-Beiträge in Dialekt, WhatsApp-Nachrichten (anonymisiert)</td></tr>
+    </table></div>`,
+  prompt:`
+    <h3 class="sec-h3">🔧 System Prompt</h3>
+    <div class="prompt-wrap">
+      <div class="prompt-label-bar"><span>System Prompt · Dialekt-Classifier</span></div>
+      <div class="prompt-block">Du bist ein Varietätenlinguistik-Experte mit Schwerpunkt auf deutschen Dialekten und Regionalsprachen.
+
+Analysiere den folgenden Text auf dialektale Merkmale.
+
+Untersuche auf drei Ebenen:
+1. Phonologisch-orthografisch: Lautliche Abweichungen von der Standardsprache
+   (z.B. Apokopen, Vokalverschiebungen, Konsonantenreduktionen)
+2. Morphologisch: Abweichungen bei Flexion, Wortbildung, Artikel, Pronomen
+   (z.B. „am + Infinitiv", „nen/ne" statt „einen/eine", Verbformen)
+3. Lexikalisch: Dialektwörter ohne Standardentsprechung oder mit abweichender Bedeutung
+   (z.B. „Bub" statt „Junge", „Madl" statt „Mädchen", „ned" statt „nicht")
+
+Ausgabe:
+– Dialektregion mit Konfidenz: hoch (mehrere eindeutige Marker) / mittel / niedrig (wenige oder mehrdeutige Marker)
+– Tabelle: Merkmal (wörtliches Zitat) | Beschreibungsebene | Standardsprachliche Form | Dialektregion
+– Explizit benennen: Welche Merkmale könnten auch auf andere Dialekte zutreffen?
+– Methodische Einschränkung: KI hat eingeschränkte Kenntnisse bei seltenen Dialekten
+
+WICHTIG: Mache KEINE Zuordnung, wenn die Datenlage zu unsicher ist.
+Antworte vollständig auf Deutsch.</div>
+    </div>
+    <button class="copy-btn" data-copy="Du bist ein Varietätenlinguistik-Experte für deutsche Dialekte.&#10;&#10;Analysiere auf 3 Ebenen:&#10;1. Phonologisch-orthografisch&#10;2. Morphologisch&#10;3. Lexikalisch&#10;&#10;Ausgabe:&#10;– Dialektregion mit Konfidenz (hoch/mittel/niedrig)&#10;– Tabelle: Merkmal | Ebene | Standardform | Region&#10;– Mehrdeutige Merkmale explizit nennen&#10;– Methodische Einschränkung erwähnen&#10;Keine unsicheren Zuordnungen! Auf Deutsch." onclick="copyBtn(this)">📋 Prompt kopieren</button>`,
+  output:`
+    <h3 class="sec-h3">📊 Beispiel-Output</h3>
+    <div class="output-box ob-ok">
+      <div class="ob-label">✅ Guter Output – mit korrekten Unsicherheitsmarkierungen</div>
+      <p style="font-size:.86rem;color:#4B5563"><strong>Dialektregion:</strong> Bairisch (Konfidenz: mittel)</p>
+      <div class="table-wrap"><table class="data-table" style="margin-top:8px">
+        <thead><tr><th>Merkmal</th><th>Ebene</th><th>Standard</th><th>Region</th></tr></thead>
+        <tbody>
+          <tr><td><span class="hl-ok">„Madl"</span></td><td>Lexikalisch</td><td>Mädchen</td><td>Bairisch/Österreichisch</td></tr>
+          <tr><td><span class="hl-ok">„ned"</span></td><td>Phonologisch</td><td>nicht</td><td>Bairisch, Alemannisch (mehrdeutig)</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:8px;font-size:.86rem;color:#922B21"><strong>Einschränkung:</strong> „ned" ist nicht eindeutig; könnte auch Alemannisch sein. Externe Verifikation empfohlen.</p>
+    </div>`,
+  tipps:`
+    <div class="hint warn"><span class="hint-icon">⚠️</span><div><strong>Dieser App-Typ ist ideal für den Halluzinationstest!</strong> KI erfindet bei Dialekten besonders häufig Merkmale oder ordnet falsch zu. Vergleichen Sie die Ergebnisse mit dem „Atlas der deutschen Alltagssprache" (atlas-alltagssprache.de).</div></div>
+    <div class="ts-item"><h4>KI erfindet dialektale Merkmale</h4><p>Die KI behauptet, ein Wort sei dialektal, aber das ist falsch.</p><div class="ts-fix">Halluzinations-Test zwingend: Überprüfen Sie jedes benannte Dialektmerkmal in einem Wörterbuch oder Atlas (z.B. Duden Dialektatlas, WDU).</div></div>`
+},
+
+/* ─── SENTIMENT-TIMELINE ───────────────────────── */
+sentiment: {
+  name:'Sentiment-Timeline', icon:'📈', level:'ex',
+  badge:'🚀 Experten', badgeBg:'#C0392B',
+  sub:'Verfolgt den emotionalen Verlauf in Texten absatzweise – dynamische Sentiment-Analyse',
+  plan:`
+    <h3 class="sec-h3">📄 Planung</h3>
+    <div class="table-wrap"><table class="plan-table">
+      <tr><th>Was?</th><td>Absatzweise Sentiment-Analyse mit Emotional-Score und Verlaufsbeschreibung. Identifikation von emotionalen Wendepunkten.</td></tr>
+      <tr><th>Warum?</th><td>Statische Sentiment-Analyse (Gesamttext positiv/negativ) ist bekannt. Dynamische Verlaufsanalyse ist wissenschaftlich interessanter und nähert sich der Narratologie an.</td></tr>
+      <tr><th>Idealer Testtext</th><td>Politische Rede (mind. 6 Absätze), Zeitungskommentar, Kurzgeschichte, Kundenbewertungstext</td></tr>
+    </table></div>`,
+  prompt:`
+    <h3 class="sec-h3">🔧 System Prompt</h3>
+    <div class="prompt-wrap">
+      <div class="prompt-label-bar"><span>System Prompt · Sentiment-Timeline</span></div>
+      <div class="prompt-block">Du bist ein Computerlinguistik-Experte mit Schwerpunkt auf Sentiment-Analyse und Emotionsverläufen in deutschsprachigen Texten.
+
+Analysiere den folgenden Text absatzweise auf den emotionalen Verlauf.
+
+Schritt 1 – Absatz-Sentiment:
+Bewerte jeden nummerierten Absatz auf einer Skala von –2 bis +2:
+–2 = stark negativ | –1 = leicht negativ | 0 = neutral | +1 = leicht positiv | +2 = stark positiv
+
+Schritt 2 – Emotions-Kategorien (nach Plutchik 1980):
+Erkenne die dominierende Emotion pro Absatz aus:
+Freude | Trauer | Wut | Angst | Überraschung | Ekel | Vertrauen | Vorfreude
+
+Schritt 3 – Verlaufsanalyse:
+Beschreibe den emotionalen Bogen des Textes:
+Gibt es eine Eskalation, einen Wendepunkt, eine Katharsis, einen Drei-Akt-Bogen?
+
+Ausgabe:
+– Tabelle: Absatz-Nr. | Score | Emotion | Schlüsselwort/-phrase aus dem Text
+– Verlaufsbeschreibung (3–4 Sätze)
+– Welche sprachlichen Mittel erzeugen die jeweiligen Emotionen? (Wortschatz, Satzlänge, Satzzeichen)
+
+Methodische Einschränkung: Sentiment-Analyse ist kulturell und kontextuell abhängig.
+Antworte vollständig auf Deutsch.</div>
+    </div>
+    <button class="copy-btn" data-copy="Du bist ein Computerlinguistik-Experte für Sentiment-Analyse und Emotionsverläufe.&#10;&#10;Analysiere absatzweise:&#10;1. Score –2 bis +2&#10;2. Emotions-Kategorie (Plutchik 1980)&#10;3. Verlaufsanalyse&#10;&#10;Ausgabe: Tabelle (Absatz | Score | Emotion | Schlüsselwort) + Verlaufsbeschreibung + sprachliche Mittel&#10;Methodische Einschränkung erwähnen. Auf Deutsch." onclick="copyBtn(this)">📋 Prompt kopieren</button>`,
+  output:`
+    <h3 class="sec-h3">📊 Beispiel-Output</h3>
+    <div class="output-box ob-ok">
+      <div class="ob-label">✅ Guter Output (Politische Rede)</div>
+      <div class="table-wrap"><table class="data-table" style="margin-top:8px">
+        <thead><tr><th>Absatz</th><th>Score</th><th>Emotion</th><th>Schlüsselwort</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>+1</td><td>Vertrauen</td><td>„gemeinsam"</td></tr>
+          <tr><td>3</td><td>–2</td><td>Wut</td><td>„skandalös", „inakzeptabel"</td></tr>
+          <tr><td>6</td><td>+2</td><td>Vorfreude</td><td>„Aufbruch", „Zukunft gestalten"</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:8px;font-size:.86rem;color:#4B5563"><strong>Verlauf:</strong> Klassischer rhetorischer Drei-Akt-Bogen: Optimismus → Konflikt/Anklage → Aufruf und Hoffnung.</p>
+    </div>`,
+  tipps:`
+    <div class="hint tip"><span class="hint-icon">💡</span><div><strong>Tipp:</strong> Bitten Sie die KI nach der Analyse, die Verlaufskurve als einfaches ASCII-Diagramm darzustellen (z.B. +2 ↑ –2 ↑ +1). Das macht Muster sofort sichtbar.</div></div>
+    <div class="ts-item"><h4>KI weist ironie nicht korrekt aus</h4><p>Ironische Aussagen werden als positiv bewertet, obwohl sie negativ gemeint sind.</p><div class="ts-fix">Ergänzen: „Prüfe, ob Aussagen ironisch oder sarkastisch sein könnten. Wenn ja, bewerte den tatsächlichen Kommunikationsgehalt, nicht die Oberflächenbedeutung. Kennzeichne Ironie explizit."</div></div>`
+},
+
+/* ─── STIL-KOMPARATOR ──────────────────────────── */
+stil: {
+  name:'Stil-Komparator', icon:'🔄', level:'ex',
+  badge:'🚀 Experten', badgeBg:'#C0392B',
+  sub:'Vergleicht den Schreibstil zweier Texte auf mehreren linguistischen Ebenen – Grundlage der Stilometrie',
+  plan:`
+    <h3 class="sec-h3">📄 Planung</h3>
+    <div class="table-wrap"><table class="plan-table">
+      <tr><th>Was?</th><td>Systematischer Stilvergleich zweier Texte nach Lexik, Syntax, Textkohäsion, Ton/Register und Textsortenmerkmalen.</td></tr>
+      <tr><th>Warum?</th><td>Stilometrie ist ein wachsendes Forschungsfeld (Autorschaftsattribution, Plagiatserkennung, Textsortenvergleich). Dieses Tool verbindet klassische Stilanalyse mit KI.</td></tr>
+      <tr><th>Idealer Testtest</th><td>Dieselbe Meldung in zwei Medien (z.B. taz vs. FAZ), zwei historische Texte derselben Epoche, zwei Schüler- oder Studierenden-Aufsätze zum selben Thema</td></tr>
+    </table></div>`,
+  prompt:`
+    <h3 class="sec-h3">🔧 System Prompt</h3>
+    <div class="prompt-wrap">
+      <div class="prompt-label-bar"><span>System Prompt · Stil-Komparator</span></div>
+      <div class="prompt-block">Du bist ein Stilistik-Experte mit Schwerpunkt auf vergleichender Textanalyse und Stilometrie deutschsprachiger Texte.
+
+Analysiere die folgenden zwei Texte (TEXT A und TEXT B) auf stilistische Unterschiede.
+
+Vergleiche auf diesen Ebenen (je 1–2 konkrete Textbelege):
+
+1. Lexik: Wortschatz-Niveau (Grundwortschatz / Erweiterungs- / Akademisch), Bildlichkeit, Emotionalität des Wortschatzes
+2. Syntax: Durchschnittliche Satzlänge (geschätzt), Satztypen, Hypotaxe vs. Parataxe, Verbstellungsmuster
+3. Textkohäsion: Dominierende Konnektoren (Koordination / Subordination / lexikalische Kohäsion)
+4. Ton und Register: Formell/informell, sachlich/expressiv, Grad der Subjektivität
+5. Textsortenmerkmale: Welchem Texttyp ist jeder Text zuzuordnen? Mit Begründung.
+
+Ausgabeformat:
+– Vergleichstabelle: Stilebene | TEXT A | TEXT B
+– Fazit: In welchen Dimensionen unterscheiden sich die Texte am stärksten?
+– Hypothese zur Autorschaft/Institution: Was lässt der Stil vermuten?
+
+Antworte vollständig auf Deutsch.</div>
+    </div>
+    <button class="copy-btn" data-copy="Du bist ein Stilometrie-Experte für vergleichende Textanalyse.&#10;&#10;Vergleiche TEXT A und TEXT B auf:&#10;1. Lexik (Niveau, Bildlichkeit, Emotionalität)&#10;2. Syntax (Satzlänge, Hypotaxe/Parataxe)&#10;3. Textkohäsion (Konnektoren)&#10;4. Ton/Register&#10;5. Textsortenmerkmale&#10;&#10;Ausgabe: Vergleichstabelle + Fazit + Autorschaftshypothese&#10;Auf Deutsch." onclick="copyBtn(this)">📋 Prompt kopieren</button>`,
+  output:`
+    <h3 class="sec-h3">📊 Beispiel-Output</h3>
+    <div class="output-box ob-ok">
+      <div class="ob-label">✅ Guter Output (taz vs. FAZ zum selben Ereignis)</div>
+      <div class="table-wrap"><table class="data-table" style="margin-top:8px">
+        <thead><tr><th>Stilebene</th><th>TEXT A (taz)</th><th>TEXT B (FAZ)</th></tr></thead>
+        <tbody>
+          <tr><td>Satzlänge ⌀</td><td>16 Wörter</td><td>29 Wörter</td></tr>
+          <tr><td>Register</td><td>Engagiert, direkt, wertend</td><td>Sachlich, distanziert, analysierend</td></tr>
+          <tr><td>Konnektoren</td><td>„weil", „aber", „deshalb"</td><td>„wenngleich", „dessen ungeachtet", „insofern als"</td></tr>
+          <tr><td>Lexik</td><td>Grundwortschatz + Wertungsadjektive</td><td>Erweiterungs- und Akademischer Wortschatz</td></tr>
+        </tbody>
+      </table></div>
+    </div>`,
+  tipps:`
+    <div class="hint tip"><span class="hint-icon">💡</span><div><strong>Erweitert:</strong> Bitten Sie die KI nach dem Vergleich, TEXT B vollständig im Stil von TEXT A umzuschreiben. Das macht stilistische Unterschiede besonders anschaulich.</div></div>
+    <div class="ts-item"><h4>KI-Satzlängenschätzung ist ungenau</h4><p>Die geschätzte Durchschnittssatzlänge weicht stark von der manuellen Zählung ab.</p><div class="ts-fix">Prompt ergänzen: „Zähle die ersten 10 Sätze jedes Textes und teile die Gesamtwortzahl durch 10. Gib das als Schätzgrundlage an."</div></div>`
+},
+
+/* ─── METAPHERN-EXTRAKTOR ──────────────────────── */
+metapher: {
+  name:'Metaphern-Extraktor', icon:'🎭', level:'ex',
+  badge:'🚀 Experten', badgeBg:'#C0392B',
+  sub:'Erkennt konzeptuelle Metaphern nach Lakoff &amp; Johnson (1980) und analysiert ihre ideologischen Implikationen',
+  plan:`
+    <h3 class="sec-h3">📄 Planung</h3>
+    <div class="table-wrap"><table class="plan-table">
+      <tr><th>Was?</th><td>Extraktion konzeptueller Metaphern (Lakoff &amp; Johnson 1980) und ihrer sprachlichen Realisierungen. Analyse ideologischer Implikationen.</td></tr>
+      <tr><th>Warum?</th><td>Konzeptuelle Metaphern strukturieren Denken und Handeln. Politiksprache, Wirtschaftssprache und Wissenschaftspopularisierung sind reich an systematischen Metaphern.</td></tr>
+      <tr><th>Voraussetzung</th><td>Kenntnis der kognitiven Metapherntheorie (Lakoff &amp; Johnson „Metaphors We Live By", 1980) wird dringend empfohlen</td></tr>
+      <tr><th>Idealer Testtext</th><td>Politische Reden, Wirtschaftskommentare, Wissenschaftspopularisierung (mind. 300 Wörter)</td></tr>
+    </table></div>`,
+  prompt:`
+    <h3 class="sec-h3">🔧 System Prompt</h3>
+    <div class="prompt-wrap">
+      <div class="prompt-label-bar"><span>System Prompt · Metaphern-Extraktor</span></div>
+      <div class="prompt-block">Du bist ein Experte für kognitive Linguistik und konzeptuelle Metapherntheorie nach Lakoff &amp; Johnson (1980).
+
+Analysiere den folgenden Text auf konzeptuelle Metaphern.
+
+Theoretischer Rahmen:
+Konzeptuelle Metaphern haben die Form: ZIELBEREICH IST QUELLBEREICH
+Beispiele: ARGUMENT IST KRIEG | WIRTSCHAFT IST ORGANISMUS | ZEIT IST GELD
+
+Schritt 1 – Metaphorische Ausdrücke identifizieren:
+Suche nach sprachlichen Ausdrücken, die auf eine zugrunde liegende konzeptuelle Metapher hinweisen.
+Beispiel: „Das Argument wurde angegriffen" → sprachlicher Ausdruck der Metapher ARGUMENT IST KRIEG
+
+Schritt 2 – Konzeptuelle Metapher abstrahieren:
+Welche übergeordnete konzeptuelle Metapher liegt dem Ausdruck zugrunde?
+
+Schritt 3 – Ideologische Implikationen:
+Welches Weltbild und welche Handlungsmöglichkeiten (und -ausschlüsse) ergeben sich aus der Metapher?
+
+AUSSCHLUSS: Tote Metaphern (lexikalisiert, nicht mehr als Metapher wahrgenommen, z.B. „Tischbein") werden NICHT analysiert.
+
+Ausgabe (Tabelle):
+| Textstelle (wörtlich) | Konzeptuelle Metapher | Ideologische Implikation |
+
+Begründe alle Zuordnungen mit max. 1 Satz.
+Antworte vollständig auf Deutsch. Gib Unsicherheiten an.</div>
+    </div>
+    <button class="copy-btn" data-copy="Du bist ein Experte für kognitive Metapherntheorie (Lakoff &amp; Johnson 1980).&#10;&#10;Analysiere:&#10;1. Metaphorische Ausdrücke im Text&#10;2. Konzeptuelle Metapher (ZIEL IST QUELLE)&#10;3. Ideologische Implikationen&#10;&#10;Ausschluss: Tote Metaphern&#10;Ausgabe: Tabelle mit Begründungen (1 Satz je Eintrag)&#10;Unsicherheiten offen angeben. Auf Deutsch." onclick="copyBtn(this)">📋 Prompt kopieren</button>`,
+  output:`
+    <h3 class="sec-h3">📊 Beispiel-Output</h3>
+    <div class="output-box ob-ok">
+      <div class="ob-label">✅ Guter Output (Wirtschaftskommentar)</div>
+      <div class="table-wrap"><table class="data-table" style="margin-top:8px">
+        <thead><tr><th>Textstelle</th><th>Konzeptuelle Metapher</th><th>Implikation</th></tr></thead>
+        <tbody>
+          <tr><td><span class="hl-ok">„die Konjunktur belebt sich"</span></td><td>WIRTSCHAFT IST LEBEWESEN</td><td>Eigenständige Entwicklung → menschliche Verantwortung wird invisibilisiert</td></tr>
+          <tr><td><span class="hl-ok">„der Markt reagiert nervös"</span></td><td>MARKT IST PERSON</td><td>Emotionalisierung ökonomischer Prozesse → suggeriert Unberechenbarkeit</td></tr>
+        </tbody>
+      </table></div>
+    </div>`,
+  tipps:`
+    <div class="hint info"><span class="hint-icon">ℹ️</span><div><strong>Literaturempfehlung:</strong> Lakoff, G. &amp; Johnson, M. (1980/2003): Metaphors We Live By. University of Chicago Press. – Kapitel 1–3 als Einstieg (deutsche Übersetzung: „Leben in Metaphern", 2018).</div></div>
+    <div class="ts-item"><h4>KI überklassifiziert: zu viele „Metaphern"</h4><p>Normale bildhafte Ausdrücke, die längst lexikalisiert sind, werden als konzeptuelle Metaphern gezählt.</p><div class="ts-fix">Präzisieren: „Analysiere nur Ausdrücke, die auf eine systematische, konsistente konzeptuelle Metapher hinweisen – nicht einzelne kreative Bilder und nicht lexikalisierte Phrasen wie 'Tischbein' oder 'Flaschenpost'."</div></div>`
+},
+
+/* ─── REGISTERANALYSE-TOOL ─────────────────────── */
+register: {
+  name:'Registeranalyse-Tool', icon:'📊', level:'ex',
+  badge:'🚀 Experten', badgeBg:'#C0392B',
+  sub:'Analysiert das sprachliche Register nach Koch &amp; Oesterreicher (1985) – Nähe/Distanz-Modell der Textlinguistik',
+  plan:`
+    <h3 class="sec-h3">📄 Planung</h3>
+    <div class="table-wrap"><table class="plan-table">
+      <tr><th>Was?</th><td>Registeranalyse nach dem Nähe-Distanz-Modell (Koch &amp; Oesterreicher 1985) und Halliday (field, tenor, mode). Einordnung auf der konzeptionellen Achse.</td></tr>
+      <tr><th>Warum?</th><td>Das Nähe-Distanz-Modell ist ein Kernrahmen der Medienlinguistik und Textlinguistik. Dieses Tool operationalisiert das theoretische Modell in eine anwendbare Analyse.</td></tr>
+      <tr><th>Voraussetzung</th><td>Kenntnis von Koch &amp; Oesterreicher (1985/1994) wird dringend empfohlen. Das Modell ist zentral für die Lehrveranstaltung.</td></tr>
+      <tr><th>Idealer Testtext</th><td>Je ein Text aus: WhatsApp-Nachricht / E-Mail / Zeitungsartikel / wissenschaftlicher Aufsatz / Gesetzestext – zum direkten Nähe-Distanz-Vergleich</td></tr>
+    </table></div>`,
+  prompt:`
+    <h3 class="sec-h3">🔧 System Prompt</h3>
+    <div class="prompt-wrap">
+      <div class="prompt-label-bar"><span>System Prompt · Registeranalyse</span></div>
+      <div class="prompt-block">Du bist ein Textlinguistik-Experte mit Spezialisierung auf Registeranalyse und das Nähe-Distanz-Modell (Koch &amp; Oesterreicher 1985).
+
+Analysiere den folgenden Text nach dem Nähe-Distanz-Modell.
+
+Theoretischer Rahmen:
+KONZEPTIONELLE MÜNDLICHKEIT (Nähe) ↔ KONZEPTIONELLE SCHRIFTLICHKEIT (Distanz)
+Die konzeptionelle Achse ist unabhängig vom Medium (mündlich/schriftlich).
+
+Analysiere diese Kommunikationsparameter (je 1–5 Punkte, 1=Distanz-Pol, 5=Nähe-Pol):
+1. Privatheit: öffentlich (1) ↔ privat (5)
+2. Vertrautheit: fremd (1) ↔ vertraut (5)
+3. Emotionalität: sachlich-distanziert (1) ↔ emotional (5)
+4. Expressivität: konventionell (1) ↔ kreativ-spontan (5)
+5. Situations-Einbindung: dekontextualisiert (1) ↔ situationsgebunden (5)
+6. Themenvielfalt: monothematisch (1) ↔ polythematisch (5)
+
+Für jeden Parameter: Score + ein konkreter Textbeleg + sprachliche Realisierung
+
+Einordnung:
+Score 1–2 gesamt → Distanzsprache | Score 2–4 → Übergangsvariante | Score 4–5 → Nähesprache
+
+Ausgabe: Tabelle mit Scores + Belegen + Gesamteinordnung + sprachliche Merkmale je Parameter
+Antworte vollständig auf Deutsch.</div>
+    </div>
+    <button class="copy-btn" data-copy="Du bist ein Textlinguistik-Experte für Registeranalyse (Koch &amp; Oesterreicher 1985).&#10;&#10;Analysiere nach Nähe-Distanz-Modell (6 Parameter, je 1–5 Punkte):&#10;1. Privatheit, 2. Vertrautheit, 3. Emotionalität, 4. Expressivität, 5. Situations-Einbindung, 6. Themenvielfalt&#10;&#10;Ausgabe: Tabelle mit Score + Textbeleg + sprachlicher Realisierung&#10;+ Gesamteinordnung (Nähesprache / Übergang / Distanzsprache)&#10;Auf Deutsch." onclick="copyBtn(this)">📋 Prompt kopieren</button>`,
+  output:`
+    <h3 class="sec-h3">📊 Beispiel-Output</h3>
+    <div class="output-box ob-ok">
+      <div class="ob-label">✅ Guter Output (WhatsApp-Nachricht)</div>
+      <div class="table-wrap"><table class="data-table" style="margin-top:8px">
+        <thead><tr><th>Parameter</th><th>Score</th><th>Textbeleg</th><th>Sprachliche Realisierung</th></tr></thead>
+        <tbody>
+          <tr><td>Privatheit</td><td>5/5</td><td><span class="hl-ok">„hast du morgen Zeit?"</span></td><td>Du-Anrede, kein Betreff</td></tr>
+          <tr><td>Situations-Einbindung</td><td>5/5</td><td><span class="hl-ok">„morgen"</span></td><td>Situationsdeixis ohne Datum</td></tr>
+          <tr><td>Emotionalität</td><td>4/5</td><td>Emojis, Ausrufezeichen</td><td>Paraverbale Mittel</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:8px;font-size:.86rem;color:#4B5563"><strong>Gesamteinordnung: Nähesprache (⌀ 4,3 / 5)</strong> – typische konzeptionelle Mündlichkeit im digitalen Medium.</p>
+    </div>`,
+  tipps:`
+    <div class="hint info"><span class="hint-icon">ℹ️</span><div><strong>Literaturempfehlung:</strong> Koch, P. &amp; Oesterreicher, W. (1985): Sprache der Nähe – Sprache der Distanz. Romanistisches Jahrbuch 36, 15–43. – Pflichtlektüre für dieses Tool.</div></div>
+    <div class="hint tip"><span class="hint-icon">💡</span><div><strong>Tipp:</strong> Analysieren Sie 4 Textsorten auf der Nähe-Distanz-Achse (WhatsApp / Zeitungsartikel / Gesetzestext / Literatur) und erstellen Sie ein gemeinsames Diagramm aller Scores.</div></div>
+    <div class="ts-item"><h4>KI kennt das Modell nicht korrekt</h4><p>Die KI verwechselt konzeptionelle und mediale Schriftlichkeit.</p><div class="ts-fix">Die theoretischen Definitionen vollständig in den Prompt einbauen (wie oben). Ergänzen: „Beachte: Eine WhatsApp-Nachricht ist medial schriftlich, aber konzeptionell mündlich – das ist der Kern des Nähe-Distanz-Modells."</div></div>`
+}
+
+}; // end TOPICS
+
+/* ── showTopic ──────────────────────────────────── */
+function showTopic(id) {
+  const t = TOPICS[id];
+  if (!t) return;
+
+  // Karten-Selektion
+  document.querySelectorAll('.topic-card').forEach(c => {
+    c.classList.remove('sel-e','sel-f','sel-ex');
+  });
+  event.currentTarget.classList.add('sel-' + t.level);
+
+  // Badge-Farbe
+  const badgeEl = document.getElementById('dp-badge');
+  badgeEl.textContent = t.badge;
+  badgeEl.style.background = t.badgeBg;
+  badgeEl.style.color = '#fff';
+
+  document.getElementById('dp-title').textContent = t.icon + '\u2002' + t.name;
+  document.getElementById('dp-sub').textContent   = t.sub;
+
+  // Accent-Farbe des Header-Borders
+  const headerEl = document.getElementById('dp-header');
+  const colors = { e: '#27AE60', f: '#6C3483', ex: '#C0392B' };
+  headerEl.style.borderTopColor = colors[t.level] || '#1ABC9C';
+
+  // Tabs füllen
+  document.getElementById('dp-plan').innerHTML   = t.plan;
+  document.getElementById('dp-prompt').innerHTML = t.prompt;
+  document.getElementById('dp-output').innerHTML = t.output;
+  document.getElementById('dp-tipps').innerHTML  = t.tipps;
+
+  // Tab-Reset auf Planung
+  document.querySelectorAll('.dp-tab-content').forEach(tc => tc.classList.remove('active'));
+  document.querySelectorAll('.dp-tab').forEach(tb => tb.classList.remove('active'));
+  document.getElementById('dp-plan').classList.add('active');
+  document.querySelector('.dp-tab').classList.add('active');
+
+  // Panel öffnen und scrollen
+  const panel = document.getElementById('detail-panel');
+  panel.classList.add('open');
+  setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
+}
+
+/* ── Modern UX helpers ───────────────────────────── */
+const UX_STORE = 'vibeCodingUxPrefs';
+const I18N = {
+  de: {
+    settingsTitle:'Einstellungen', language:'Sprache', darkMode:'Dark Mode', compactMode:'Kompakte Ansicht',
+    updates:'Update-Hinweise', fontSize:'Textgröße', securityNote:'Sicherheit: Alle Einstellungen werden nur lokal im Browser gespeichert. Es werden keine Passwörter oder personenbezogenen Daten in diesem Prototyp übertragen.',
+    authTitle:'Schnell anmelden', authNote:'Demo-Integration: In einer Produktivversion wird OAuth 2.0/OpenID Connect serverseitig validiert und mit CSRF-Schutz abgesichert.',
+    dashboardTitle:'Lern-Dashboard', dashboardIntro:'Personalisieren Sie die Startansicht, verfolgen Sie Fortschritt und finden Sie App-Ideen schneller.',
+    progressTitle:'Fortschritt & Fokus', distributionTitle:'Ideen nach Niveau', visualTitle:'Datenvisualisierung',
+    customizeTitle:'Dashboard anpassen', updatesTitle:'Update-Center', analyticsTitle:'Performance Analytics'
+  },
+  en: {
+    settingsTitle:'Settings', language:'Language', darkMode:'Dark mode', compactMode:'Compact view',
+    updates:'Update alerts', fontSize:'Text size', securityNote:'Security: All preferences stay local in this browser. This prototype does not transmit passwords or personal data.',
+    authTitle:'Quick sign-in', authNote:'Demo integration: A production version validates OAuth 2.0/OpenID Connect on the server and adds CSRF protection.',
+    dashboardTitle:'Learning dashboard', dashboardIntro:'Personalize your start view, track progress, and find app ideas faster.',
+    progressTitle:'Progress & focus', distributionTitle:'Ideas by level', visualTitle:'Data visualization',
+    customizeTitle:'Customize dashboard', updatesTitle:'Update center', analyticsTitle:'Performance analytics'
+  },
+  ko: {
+    settingsTitle:'설정', language:'언어', darkMode:'다크 모드', compactMode:'컴팩트 보기',
+    updates:'업데이트 알림', fontSize:'글자 크기', securityNote:'보안: 모든 설정은 이 브라우저에만 저장됩니다. 이 프로토타입은 비밀번호나 개인정보를 전송하지 않습니다.',
+    authTitle:'간편 로그인', authNote:'데모 연동: 실제 서비스에서는 OAuth 2.0/OpenID Connect를 서버에서 검증하고 CSRF 보호를 적용합니다.',
+    dashboardTitle:'학습 대시보드', dashboardIntro:'시작 화면을 개인화하고 진행 상황을 확인하며 앱 아이디어를 더 빠르게 찾을 수 있습니다.',
+    progressTitle:'진행률과 포커스', distributionTitle:'난이도별 아이디어', visualTitle:'데이터 시각화',
+    customizeTitle:'대시보드 맞춤 설정', updatesTitle:'업데이트 센터', analyticsTitle:'성능 분석'
+  }
+};
+
+function readPrefs() {
+  try { return JSON.parse(localStorage.getItem(UX_STORE)) || {}; }
+  catch (_) { return {}; }
+}
+
+function writePrefs(next) {
+  localStorage.setItem(UX_STORE, JSON.stringify({ ...readPrefs(), ...next }));
+}
+
+function setPanel(id, open) {
+  const panel = document.getElementById(id);
+  panel.classList.toggle('open', open);
+  panel.setAttribute('aria-hidden', String(!open));
+}
+
+function toggleSettings() {
+  const open = !document.getElementById('settings-panel').classList.contains('open');
+  setPanel('settings-panel', open);
+  if (open) setPanel('auth-panel', false);
+}
+
+function toggleAuth() {
+  const open = !document.getElementById('auth-panel').classList.contains('open');
+  setPanel('auth-panel', open);
+  if (open) setPanel('settings-panel', false);
+}
+
+function toggleTheme() {
+  const next = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.body.dataset.theme = next;
+  document.getElementById('dark-toggle').setAttribute('aria-pressed', String(next === 'dark'));
+  document.querySelector('meta[name="theme-color"]').setAttribute('content', next === 'dark' ? '#07111E' : '#0D1B2A');
+  writePrefs({ theme: next });
+}
+
+function toggleCompact() {
+  const active = !document.body.classList.contains('compact-mode');
+  document.body.classList.toggle('compact-mode', active);
+  document.getElementById('compact-toggle').setAttribute('aria-pressed', String(active));
+  writePrefs({ compact: active });
+}
+
+function toggleUpdates() {
+  const btn = document.getElementById('updates-toggle');
+  const active = btn.getAttribute('aria-pressed') !== 'true';
+  btn.setAttribute('aria-pressed', String(active));
+  writePrefs({ updates: active });
+  if (active) pushNotice('Update-Hinweise sind aktiv.');
+}
+
+function setFontSize(value) {
+  document.documentElement.style.fontSize = value + 'px';
+  writePrefs({ fontSize: value });
+}
+
+function setLanguage(lang) {
+  const dict = I18N[lang] || I18N.de;
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (dict[key]) el.textContent = dict[key];
+  });
+  document.getElementById('language-select').value = lang;
+  writePrefs({ lang });
+}
+
+function toggleWidget(name) {
+  const card = document.querySelector(`[data-widget="${name}"]`);
+  const btn = document.querySelector(`[data-widget-toggle="${name}"]`);
+  if (!card || !btn) return;
+  const visible = card.classList.toggle('hidden-widget') === false;
+  btn.setAttribute('aria-pressed', String(visible));
+  const prefs = readPrefs();
+  const widgets = { ...(prefs.widgets || {}), [name]: visible };
+  writePrefs({ widgets });
+}
+
+function applyWidgets(widgets = {}) {
+  Object.entries(widgets).forEach(([name, visible]) => {
+    const card = document.querySelector(`[data-widget="${name}"]`);
+    const btn = document.querySelector(`[data-widget-toggle="${name}"]`);
+    if (card) card.classList.toggle('hidden-widget', !visible);
+    if (btn) btn.setAttribute('aria-pressed', String(visible));
+  });
+}
+
+function pushNotice(message) {
+  const stack = document.getElementById('notice-stack');
+  const note = document.createElement('div');
+  note.className = 'notice';
+  note.textContent = message;
+  stack.appendChild(note);
+  setTimeout(() => note.remove(), 5600);
+}
+
+function mockLogin(provider) {
+  sessionStorage.setItem('vibeAuthProvider', provider);
+  pushNotice(provider + ' Login vorbereitet. Für Produktion bitte serverseitige OAuth-Validierung anbinden.');
+  setPanel('auth-panel', false);
+}
+
+function filterContent(query) {
+  const q = query.trim().toLowerCase();
+  const cards = [...document.querySelectorAll('.topic-card')];
+  let count = 0;
+  cards.forEach(card => {
+    const hit = !q || card.textContent.toLowerCase().includes(q);
+    card.classList.toggle('is-filtered-out', !hit);
+    if (hit) count++;
+  });
+  document.getElementById('search-results').textContent = q ? `${count} passende App-Ideen gefunden.` : '';
+}
+
+function updateChecklistKpi() {
+  const boxes = [...document.querySelectorAll('#cl-list input[type="checkbox"]')];
+  if (!boxes.length) return;
+  const done = boxes.filter(box => box.checked).length;
+  document.getElementById('kpi-checks').textContent = Math.round((done / boxes.length) * 100) + '%';
+}
+
+function trackSession() {
+  const sessions = Number(localStorage.getItem('vibeSessions') || '0') + 1;
+  localStorage.setItem('vibeSessions', String(sessions));
+  document.getElementById('kpi-views').textContent = sessions;
+}
+
+function initAnalytics() {
+  const navStart = performance.getEntriesByType('navigation')[0];
+  const loadMs = navStart ? Math.round(navStart.domContentLoadedEventEnd) : 0;
+  const lcpBar = document.getElementById('metric-lcp');
+  const lcpLabel = document.getElementById('metric-lcp-label');
+  lcpBar.style.width = Math.min(100, Math.max(8, loadMs / 30)) + '%';
+  lcpLabel.textContent = loadMs ? loadMs + 'ms' : 'n/a';
+  const clsBar = document.getElementById('metric-cls');
+  const clsLabel = document.getElementById('metric-cls-label');
+  clsBar.style.width = '8%';
+  clsLabel.textContent = '0.00';
+  window.vibeAnalytics = {
+    track(eventName, payload = {}) {
+      console.info('[analytics]', eventName, { ...payload, ts: new Date().toISOString() });
+    }
+  };
+}
+
+function applyUxPrefs() {
+  const prefs = readPrefs();
+  if (prefs.theme === 'dark') {
+    document.body.dataset.theme = 'dark';
+    document.getElementById('dark-toggle').setAttribute('aria-pressed', 'true');
+  }
+  if (prefs.compact) {
+    document.body.classList.add('compact-mode');
+    document.getElementById('compact-toggle').setAttribute('aria-pressed', 'true');
+  }
+  if (prefs.fontSize) {
+    document.getElementById('font-range').value = prefs.fontSize;
+    setFontSize(prefs.fontSize);
+  }
+  if (prefs.updates === false) {
+    document.getElementById('updates-toggle').setAttribute('aria-pressed', 'false');
+  }
+  applyWidgets(prefs.widgets);
+  setLanguage(prefs.lang || 'de');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  applyUxPrefs();
+  trackSession();
+  initAnalytics();
+  updateChecklistKpi();
+  document.addEventListener('change', event => {
+    if (event.target && event.target.matches('#cl-list input[type="checkbox"]')) updateChecklistKpi();
+  });
+  if (readPrefs().updates !== false) {
+    setTimeout(() => pushNotice('Update 15.06.2026: Mobile UX, Dark Mode, Dashboard und Analytics sind verfügbar.'), 900);
+  }
+});
+
+</script>
+</body>
+</html>
